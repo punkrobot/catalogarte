@@ -1,0 +1,23 @@
+{{#unless editable}}
+  <a {{#if content.local_file}}
+        href="#{{content.id}}_video"
+     {{else}}
+        href="{{content.url}}"
+     {{/if}}
+     data-local="{{content.local_file}}">
+{{/unless}}
+<div class="video" style="background:url('{{content.thumbnail}}');"></div>
+{{#unless editable}}
+  </a>
+{{/unless}}
+<div class="footer">
+  <i class="fa fa-video-camera"></i> {{content.title}}
+</div>
+
+{{#unless editable}}
+  {{#if content.local_file}}
+    <div id="{{content.id}}_video" class="mfp-hide">
+      <video src="{{content.url}}"></video>
+    </div>
+  {{/if}}
+{{/unless}}

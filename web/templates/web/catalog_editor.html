@@ -1,0 +1,236 @@
+{% extends "web/base.html" %}
+{% load filters staticfiles %}
+
+{% block content %}
+  <div class="workspace">
+    <div class="toolbar-container">
+      <div class="toolbar" data-spy="affix" data-offset-top="65">
+        {% include "web/_settings_toolbar.html" %}
+      </div>
+      <div class="toolbar document" data-spy="affix" data-offset-top="65">
+        <h4 class="text-center">Documento
+          <a class="toolbar-btn pull-right" data-toggle="modal" data-target="#addPageModal">
+            <i class="fa fa-plus list-item"></i>
+          </a>
+        </h4>
+        <div id="toolbar-document" class="list-group">
+          <ul id="sortable" class="nav nav-pills nav-stacked">
+            <li class="text-muted text-center toolbar-help">
+              <p>
+                Agrega páginas dando clic en el botón "+" de la esquina derecha.
+              </p>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <div class="toolbar content-properties" data-spy="affix" data-offset-top="65">
+        <h4 id="content-type-title" class="text-center toolbar-focus">Imagen</h4>
+          <div class="list-group">
+            <div id="image-expand-container" class="list-group-item">
+              <i class="fa fa-expand list-item"></i>Llenar el área
+              <input id="expand-checkbox" class="pull-right" onclick="expandImage();" type="checkbox">
+            </div>
+            <div id="slider-container" class="list-group-item">
+              Tamaño de la imagen
+              <div id="slider"></div>
+            </div>
+            <a id="image-footer-container" onclick="editImageFooter();" class="list-group-item">
+              <i class="fa fa-font list-item"></i>Pie de foto
+              <i id="footer" class="pull-right fa fa-pencil"></i>
+            </a>
+            <div id="footer-position-container" class="list-group-item">
+              <i class="fa fa-angle-right list-item"></i>Pie a la derecha
+              <input id="footer-checkbox" class="pull-right" onclick="changeFooterLocation();" type="checkbox">
+            </div>
+            <a class="list-group-item" onclick="deleteContent();">
+              <i class="fa fa-remove list-item"></i>Eliminar
+            </a>
+          </div>
+      </div>
+    </div>
+    <div id="catalog" class="center-block">
+      {% if not catalogo.contenido %}
+        <div class="placeholder center-block">Agrega una página para comenzar a crear el catálogo.</div>
+      {% endif %}
+    </div>
+    <div class="toolbar-images">
+      <div id="multimediaToolbar" class="toolbar" data-spy="affix" data-offset-top="65">
+        {% include "web/_media_toolbar.html" with exhibition=catalog.exhibition %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  {% include "web/_media_modal.html" %}
+
+  <!-- Modal -->
+  <div class="modal fade" id="addPageModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Selecciona una plantilla</h4>
+        </div>
+        <div class="modal-body">
+          <div id="templatesContainer" class="row"></div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="addPage();">Agregar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="imageFooterModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Pie de foto</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="form-group">
+              <div class="col-sm-12">
+                <textarea rows="4"  class="form-control" id="imageFooter"></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+          <button id="save-image-footer" type="button" class="btn btn-primary" data-dismiss="modal" onclick="saveImageFooter();">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="pagePropertiesModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Propiedades de la página</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-offset-1 col-md-10">
+              <div class="form-group">
+                <label for="page-title" class="col-sm-4 control-label">Título</label>
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="page-title">
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="page-padding" class="col-sm-4 control-label">Márgenes (px)</label>
+                <div class="col-sm-8">
+                  <input type="number" class="form-control" id="page-padding">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="delete-page-button" type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-trash"></i> Borrar página</button>
+          <button id="save-page-properties" type="button" class="btn btn-primary" data-dismiss="modal">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="catalogPropertiesModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+          <h4 class="modal-title">Propiedades del catálogo</h4>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="form-group">
+                <label for="page-width" class="col-sm-2 control-label">Ancho</label>
+                <div class="col-sm-4">
+                  <input type="number" class="form-control" id="page-width">
+                </div>
+                <label for="page-height" class="col-sm-2 control-label">Alto</label>
+                <div class="col-sm-4">
+                  <input type="number" class="form-control" id="page-height">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="saveCatalogProperties();">Guardar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/template" id="qq-template">
+    <div class="qq-uploader-selector">
+      <div class="qq-upload-drop-area-selector qq-upload-drop-area">
+        <span>Arrastra archivos aquí o da clic en el botón de abajo.</span>
+        <div class="qq-upload-button-selector btn btn-default btn-raised">
+          <div>Abrir explorador</div>
+        </div>
+        <span class="qq-drop-processing-selector qq-drop-processing">
+          <span>Cargando archivos</span>
+          <span class="qq-drop-processing-spinner-selector qq-drop-processing-spinner"></span>
+        </span>
+        <ul class="qq-upload-list-selector qq-upload-list">
+          <li>
+            <div class="qq-progress-bar-container-selector progress">
+              <div class="qq-progress-bar-selector progress-bar progress-bar-info"></div>
+            </div>
+            <span class="qq-upload-file-selector qq-upload-file"></span>
+            <span class="qq-upload-size-selector qq-upload-size"></span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </script>
+
+  {% csrf_token %}
+{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+  <link href="{% static 'web/css/jquery-ui.min.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block javascript %}
+  <script src="{% static 'ckeditor/ckeditor/ckeditor.js' %}"></script>
+  <script src="{% static 'web/js/vendor/jquery.json.min.js' %}"></script>
+  <script src="{% static 'web/js/vendor/jquery-ui.min.js' %}"></script>
+  <script src="{% static 'web/js/vendor/jquery.fine-uploader.min.js' %}"></script>
+  <script src="{% static 'web/js/vendor/draggable_background.js' %}"></script>
+  <script src="{% static 'web/js/vendor/bootbox.min.js' %}"></script>
+  <script src="{% static 'web/js/vendor/handlebars.runtime-v4.0.4.js' %}"></script>
+  <script src="{% static 'web/js/templates_compiled.js' %}"></script>
+  <script src="{% static 'web/js/app.js' %}"></script>
+  <script src="{% static 'web/js/app_editor.js' %}"></script>
+  <script>
+    var ckeditorConfigs = {{ckeditor_settings|safe}};
+    var mediaUrl = "{% url 'media.view' catalog.exhibition.slug %}";
+    var mediaUploadUrl = "{% url 'media.upload' catalog.exhibition.slug %}";
+    var catalogSaveUrl = "{% url 'catalog.view' catalog.exhibition.slug catalog.slug %}";
+    var catalogExportUrl = "{% url 'catalog.export' catalog.exhibition.slug catalog.slug %}";
+    var slug = "{{ catalog.exhibition.slug }}";
+    {% if catalog.content %}
+      var catalog = {{ catalog.content | to_json }};
+    {% else %}
+      var catalog = {
+        num_pages: 0,
+        next_id: 1,
+        width: {{catalog.width}},
+        height: {{catalog.height}},
+        pages: []
+      };
+    {% endif %}
+  </script>
+{% endblock %}

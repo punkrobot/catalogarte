@@ -1,0 +1,64 @@
+{% extends "web/base.html" %}
+{% load filters staticfiles %}
+
+{% block navbar %}{% endblock %}
+
+{% block content %}
+  <div class="catalog"></div>
+{% endblock %}
+
+{% block bootstrap_css %}
+  <link href="{% static 'web/css/bootstrap.min.css' %}" rel="stylesheet" media="all">
+  <link href="{% static 'web/css/material.min.css' %}" rel="stylesheet" media="all">
+{% endblock %}
+
+{% block css %}
+  <link href="{% static "web/css/print.css" %}" rel="stylesheet" media="all">
+{% endblock %}
+
+{% block javascript %}
+  <script src="{% static 'web/js/vendor/handlebars.runtime-v4.0.4.js' %}"></script>
+  <script src="{% static 'web/js/templates_compiled.js' %}"></script>
+  <script src="{% static 'web/js/app.js' %}"></script>
+  <script>
+    {% if catalog.content %}
+      var catalog = {{ catalog.content | to_json }};
+    {% else %}
+      var catalog = { num_pages: 0, next_id: 1, width: {{catalog.width}}, height: {{catalog.height}}, pages: []};
+    {% endif %}
+
+    $(function() {
+      registerHandlebarsHelpers();
+      $.each(catalog.pages, function (i, page) {
+        var html = Handlebars.templates["desktop_"+page.template](page);
+        $(".catalog").append(html);
+      });
+      $(".item").css({"width": catalog.width + "px", "height": catalog.height + "px"});
+
+      $("a[data-local='false']").each(function(){
+        var url = $(this).attr("href");
+        $(this).next().wrap($("<a>", {href: url}));
+      });
+
+      $("a[data-local='true']").each(function(){
+        var url = $(this).parent().find("video").attr("src");
+        console.log("url"+url);
+        if(url.indexOf("/") == 0){
+          url = window.location.origin + url
+        }
+        $(this).attr("href", url);
+        $(this).next().wrap($("<a>", {href: url}));
+      });
+
+      $(".audio").each(function(){
+        var url = $(this).data("url");
+        if(url.indexOf("/") == 0){
+          url = window.location.origin + url
+        }
+        $(this).next().wrap($("<a>", {href: url}));
+        $(this).wrap($("<a>", {href: url}));
+      });
+
+    });
+  </script>
+{% endblock %}

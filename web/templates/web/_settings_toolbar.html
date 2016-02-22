@@ -1,0 +1,15 @@
+<h4 class="text-center">Herramientas</h4>
+<div class="list-group">
+  <a class="list-group-item" onclick="showCatalogProperties();" >
+    <i class="fa fa-gear list-item"></i>Configuración
+  </a>
+  <a id="export-button" class="list-group-item" onclick="exportCatalog();">
+    <i class="fa fa-upload list-item"></i>Exportar<i class="fa fa-circle-o-notch fa-spin pull-right"></i>
+  </a>
+  <a id="preview-button" class="list-group-item" href="{% url 'catalog.preview' catalog.exhibition.slug catalog.slug %}">
+    <i class="fa fa-eye list-item"></i>Pre-visualizar
+  </a>
+  <a id="save-button" class="list-group-item" onclick="saveCatalog();">
+    <i class="fa fa-save list-item"></i>Guardar<i class="fa fa-circle-o-notch fa-spin pull-right"></i>
+  </a>
+</div>

@@ -1,0 +1,242 @@
+html, body{
+    height:100%;
+}
+
+.h100 {
+    height: 100%;
+}
+
+.h75 {
+    height: 75%;
+}
+
+.h50 {
+    height: 50%;
+}
+
+.h25 {
+    height: 25%;
+}
+
+.h33 {
+    height: 33%;
+}
+
+.c {
+    height: 100%;
+    padding-right: 15px;
+    padding-left: 0;
+}
+
+.r {
+    padding-top: 0;
+    padding-bottom: 15px;
+}
+
+.logo {
+    float: left;
+    height: 60px;
+    font-size: 1.5em;
+    line-height: 58px;
+    margin-right: 25px;
+}
+
+@media only screen and (max-width : 768px) {
+    .logo {
+        float: left;
+        height: 60px;
+        font-size: 1.2em;
+        line-height: 58px;
+        margin-left: 10px;
+        margin-right: 5px;
+    }
+}
+
+.navbar-toggle {
+    margin-top: 15px;
+    margin-right: 5px;
+}
+
+#contents-dropdown{
+    position: relative;
+    float: left;
+}
+
+@media only screen and (max-width : 768px) {
+    #contents-dropdown{
+        position: inherit !important;
+    }
+}
+
+.r > :last-child { padding-right: 0 !important; }
+.item > :last-child { padding-bottom: 0 !important; }
+
+.catalog {
+    height: 100%;
+    background-color: #FFF;
+    padding-top: 55px;
+    padding-bottom: 10px;
+}
+
+.frame {
+    background-color: #FFF;
+    height: 100%;
+    padding: 0;
+}
+
+.frame .slidee {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    height: 100%;
+}
+
+.frame .slidee li {
+    float: left;
+    padding: 10px;
+}
+
+.scrollbar {
+    background: rgba(0, 0, 0, 0.1);
+    height: 10px;
+    width: 100%;
+}
+
+.scrollbar .handle {
+    background: rgba(0, 0, 0, 0.2);
+    height: 100%;
+    width: 50px;
+}
+
+.content{
+    height: 100%;
+    overflow: hidden;
+}
+
+.content .text {
+    overflow-y: auto;
+    height: 100%;
+}
+
+.gray {
+    background: #65656A !important;
+}
+
+.content h1, .content h2, .content h3, .content h4, .content h5, .content h6 {
+    margin-top: 0;
+}
+
+.content img:hover,
+.background:hover {
+    cursor: zoom-in;
+}
+
+.background,
+.video,
+.audio,
+.content img {
+    padding: 0;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, .16), 0 3px 6px rgba(0, 0, 0, .23);
+}
+
+.background {
+    height: 100%;
+    background-size: cover !important;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.image {
+    display: inline-block;
+}
+
+.image-footer {
+    margin: 5px;
+    color: #666;
+    display: table;
+}
+
+.video {
+    height: 90%;
+    margin-bottom: 5px;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+.video:after {
+    content: "";
+    background-image: url("../images/video_overlay.png");
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.audio {
+    height: 90%;
+    margin-bottom: 5px;
+    position: relative;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+.video .footer,
+.audio .footer {
+    height: 10%;
+    color: #444;
+    font-size: .85em;
+    font-style: italic;
+}
+
+.full-screen .mfp-content{
+    max-width: 900px;
+}
+
+.mejs-audio {
+    position: absolute !important;
+    bottom: 0;
+}
+
+.navbar-brand {
+    float: none !important;
+    line-height: 60px !important;
+}
+
+.dropdown-menu>li>a {
+    cursor: pointer;
+}
+
+.phone {
+    margin-top: 60px;
+    width: 500px;
+    height: 800px;
+    padding-top: 130px;
+    padding-left: 41px;
+    background: url("../images/phone.png");
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.review-done {
+    padding: 100px;
+}
+
+.alert-message {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    margin-left: -150px;
+    width: 300px;
+    z-index: 9999;
+    background-color: #8bc34a;
+    padding: 10px 20px;
+    color: #FFF;
+}
+
+.alert-dismissable .close {
+    right: -10px;
+}

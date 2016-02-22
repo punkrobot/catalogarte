@@ -1,0 +1,101 @@
+<div class="modal fade" id="multimediaModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h3 class="modal-title" id="myModalLabel">Recursos multimedia</h3>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-2">
+            <ul class="nav nav-tabs" role="tablist">
+              <li class="text-center active"><a href="#img" role="tab" data-toggle="tab">
+                <i class="fa fa-picture-o fa-2x"></i>
+                <h5>Imágenes</h5>
+              </a></li>
+              <li class="text-center"><a href="#video" role="tab" data-toggle="tab">
+                <i class="fa fa-video-camera fa-2x"></i>
+                <h5>Video</h5>
+              </a></li>
+              <li class="text-center"><a href="#audio" role="tab" data-toggle="tab">
+                <i class="fa fa-music fa-2x"></i>
+                <h5>Audio</h5>
+              </a></li>
+              <li class="text-center"><a href="#youtube" role="tab" data-toggle="tab">
+                <i class="fa fa-youtube fa-2x"></i>
+                <h5>Youtube</h5>
+              </a></li>
+              <li class="text-center"><a href="#soundcloud" role="tab" data-toggle="tab">
+                <i class="fa fa-soundcloud fa-2x"></i>
+                <h5>Soundcloud</h5>
+              </a></li>
+            </ul>
+          </div>
+          <div class="col-md-10 tab-content">
+            <div class="tab-pane fade in active" id="img">
+              <div id="imageUploader"></div>
+              <form action="{% url 'media.upload' catalog.exhibition.slug %}" id="form-image-upload">
+                <input type="hidden" name="exhibition_id" value="{{catalog.exhibition.id}}">
+                <input type="hidden" name="category" value="IMG">
+                <button id="imageLoadBtn" class="btn btn-raised btn-primary pull-right" data-loading-text="Cargando..." type="submit">Cargar</button>
+              </form>
+            </div>
+            <div class="tab-pane fade" id="video">
+              <div id="videoUploader"></div>
+              <form class="form-horizontal" action="{% url 'media.upload' catalog.exhibition.slug %}" id="form-video-upload">
+                <div class="form-group">
+                  <label for="video_title" class="col-md-3 control-label">Título del video *</label>
+                  <div class="col-md-8">
+                    <input id="video_title" name="title" class="form-control" type="text" required>
+                  </div>
+                </div>
+                <input type="hidden" name="exhibition_id" value="{{catalog.exhibition.id}}">
+                <input type="hidden" name="category" value="VID">
+                <button id="videoLoadBtn" class="btn btn-raised btn-primary pull-right" data-loading-text="Cargando..." type="submit">Cargar</button>
+              </form>
+            </div>
+            <div class="tab-pane fade" id="audio">
+              <div id="audioUploader"></div>
+              <form class="form-horizontal" action="{% url 'media.upload' catalog.exhibition.slug %}" id="form-audio-upload">
+                <div class="form-group">
+                  <label for="audio_title" class="col-md-3 control-label">Título del audio *</label>
+                  <div class="col-md-8">
+                    <input id="audio_title" name="title" class="form-control" type="text" required>
+                  </div>
+                </div>
+                <input type="hidden" name="exhibition_id" value="{{catalog.exhibition.id}}">
+                <input type="hidden" name="category" value="AUD">
+                <button id="audioLoadBtn" class="btn btn-raised btn-primary pull-right" data-loading-text="Cargando..." type="submit">Cargar</button>
+              </form>
+            </div>
+            <div class="tab-pane pane fade" id="youtube">
+              <div id="videoUrlInputForm" class="form-group">
+                <label class="control-label pull-left" for="videoUrlInput">Ingresa la url del video</label>
+                <input type="text" class="form-control" id="videoUrlInput" placeholder="Por ejemplo: https://www.youtube.com/watch?v=pjkh14h8W2g">
+              </div>
+              <div class="form-group">
+                <button id="videoLoadBtn" class="btn btn-default pull-right" onclick="loadVideo();">Buscar</button>
+                <i class="fa fa-circle-o-notch fa-spin pull-right"></i>
+                <div class="center-block" id="videoPreview"></div>
+                <button id="videoInsertBtn" class="btn btn-primary pull-right" onclick="addVideo();">Guardar</button>
+              </div>
+            </div>
+            <div class="tab-pane pane fade" id="soundcloud">
+              <div id="audioUrlInputForm" class="form-group">
+                <label class="control-label pull-left" for="audioUrlInput">Ingresa la url del clip de audio</label>
+                <input type="text" class="form-control" id="audioUrlInput" placeholder="Por ejemplo: https://soundcloud.com/inbamx/ciclos-de-musica-inba">
+              </div>
+              <div class="form-group">
+                <button id="audioLoadBtn" class="btn btn-default pull-right" onclick="loadAudio();">Buscar</button>
+                <i class="fa fa-circle-o-notch fa-spin pull-right"></i>
+                <div class="center-block" id="audioPreview"></div>
+                <button id="audioInsertBtn" class="btn btn-primary pull-right" onclick="addAudio();">Guardar</button>
+              </div>
+              <br>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,7 @@
+<div class="image" style="top:{{content.y}}px;left:{{content.x}}px;position:relative;">
+  <img src="{{#if editable}}{{content.thumbnail}}{{else}}{{content.url}}{{/if}}"
+       width="{{content.width}}" height="{{content.height}}">
+  {{#if content.title}}
+    <span class="image-footer" {{#if content.footer_right}} style="float:right;" {{/if}} >{{{content.title}}}</span>
+  {{/if}}
+</div>

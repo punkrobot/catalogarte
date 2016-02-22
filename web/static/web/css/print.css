@@ -1,0 +1,134 @@
+body {
+    background-color: #FFF;
+}
+
+.h100 {
+    height: 100%;
+}
+
+.h75 {
+    height: 75%;
+}
+
+.h50 {
+    height: 50%;
+}
+
+.h25 {
+    height: 25%;
+}
+
+.h33 {
+    height: 33%;
+}
+
+.c {
+    height: 100%;
+    padding-right: 15px;
+    padding-left: 0;
+}
+
+.r {
+    padding-top: 0;
+    padding-bottom: 15px;
+}
+
+.r > :last-child { padding-right: 0 !important; }
+.item > :last-child { padding-bottom: 0 !important; }
+
+
+.item {
+    background: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    float: left;
+    list-style: none;
+}
+
+.catalog{
+    padding: 0 !important;
+}
+
+.content {
+    height: 100%;
+    overflow: hidden;
+}
+
+.content h1, .content h2, .content h3, .content h4, .content h5, .content h6 {
+    margin-top: 0;
+}
+
+.background,
+.video,
+.audio,
+.content img {
+    padding: 0;
+    box-shadow: none !important;
+}
+
+.background {
+    height: 100%;
+    background-size: cover !important;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.text {
+    height: 100%;
+    overflow: hidden;
+}
+
+.image {
+    display: inline-block;
+}
+
+.image-footer {
+    margin: 5px;
+    color: #666;
+    display: table;
+}
+
+.video {
+    height: 90%;
+    margin-bottom: 5px;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+.audio:after,
+.video:after {
+    content: "";
+    background-image: url("../images/video_overlay.png");
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.audio {
+    height: 90%;
+    margin-bottom: 5px;
+    position: relative;
+    background-size: cover !important;
+    background-position: center !important;
+    background-repeat: no-repeat !important;
+}
+
+.video .footer,
+.audio .footer {
+    height: 10%;
+    color: #444;
+    font-size: .85em;
+    font-style: italic;
+}
+
+.mfp-hide {
+    visibility: hidden;
+}
+
+a {
+    text-decoration: underline;
+}

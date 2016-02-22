@@ -1,0 +1,74 @@
+{% extends "web/base_public.html" %}
+{% load staticfiles %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 catalog">
+        <div class="row">
+          <div class="col-md-12">
+            <h1>{{ museum.name }}</h1>
+          </div>
+        </div>
+        <div class="row">
+          <hr>
+        </div>
+        <div class="row">
+          <div class="col-md-6">
+            <img src="{{ museum.cover.url }}" class="img-responsive">
+          </div>
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-md-6">
+                <h3>Enlaces</h3>
+                <ul class="links">
+                {% if museum.website %}
+                  <li><a href="{{ museum.website }}"><i class="fa fa-fw fa-globe"></i> Sitio oficial</a></li>
+                {% endif %}
+                {% if museum.instagram %}
+                  <li><a href="{{ museum.instagram }}"><i class="fa fa-fw fa-instagram"></i> Instagram</a></li>
+                {% endif %}
+                {% if museum.twitter %}
+                  <li><a href="{{ museum.twitter }}"><i class="fa fa-fw fa-twitter-square"></i> Twitter</a></li>
+                {% endif %}
+                {% if museum.facebook %}
+                  <li><a href="{{ museum.facebook }}"><i class="fa fa-fw fa-facebook-square"></i> Facebook</a></li>
+                {% endif %}
+                {% if museum.youtube %}
+                  <li><a href="{{ museum.youtube }}"><i class="fa fa-fw fa-youtube-play"></i> YouTube</a></li>
+                {% endif %}
+                </ul>
+              </div>
+              <div class="col-md-6">
+                <img src="{{ museum.logo.url }}" height="90" class="pull-right">
+              </div>
+            </div>
+            <h3>Acerca del museo</h3>
+            <div class="row">
+              <div class="col-md-12">
+                {{ museum.details | safe }}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <br><br>
+
+    <div class="row">
+      <div class="col-md-12">
+        <h2>Exhibiciones recientes</h2>
+      </div>
+    </div>
+
+    <div class="row">
+      <hr>
+    </div>
+
+    <div id="container" class="row">
+      {% include 'web/_exhibition_list.html' %}
+    </div>
+
+  </div>
+{% endblock %}

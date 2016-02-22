@@ -1,0 +1,71 @@
+{% extends "web/base.html" %}
+{% load filters staticfiles %}
+
+{% block navbar %}
+  <nav class="navbar gray navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <span class="logo">Catalog<strong>Arte</strong></span>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-left">
+          <li class="dropdown">
+            <a id="device-switcher" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Computadoras de escritorio <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#" onclick="showDesktop();">Computadoras de escritorio</a></li>
+              <li><a href="#" onclick="showMobile();">Dispositivos móviles</a></li>
+            </ul>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="active"><a href="{% url 'catalog.editor' catalog.exhibition.slug catalog.slug %}"><i class="fa fa-fw fa-caret-left"></i> Regresar</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+{% endblock %}
+
+{% block content %}
+  <div class="catalog">
+    <div class="frame">
+      <ul class="slidee"></ul>
+    </div>
+    <div class="scrollbar">
+      <div class="handle"></div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block head %}
+  <script src="{% static 'web/mediaelement/mediaelement-and-player.min.js' %}"></script>
+{% endblock %}
+
+{% block css %}
+  <link href="{% static "web/css/magnific-popup.css" %}" rel="stylesheet">
+  <link href="{% static "web/mediaelement/mediaelementplayer.min.css" %}" rel="stylesheet">
+  <link href="{% static "web/css/view.css" %}" rel="stylesheet">
+{% endblock %}
+
+{% block javascript %}
+  <script src="{% static 'web/js/vendor/bootbox.min.js' %}"></script>
+  <script src="{% static "web/js/vendor/sly.min.js" %}"></script>
+  <script src="{% static "web/js/vendor/jquery.magnific-popup.min.js" %}"></script>
+  <script src="{% static 'web/js/vendor/handlebars.runtime-v4.0.4.js' %}"></script>
+  <script src="{% static 'web/js/templates_compiled.js' %}"></script>
+  <script src="{% static 'web/js/app.js' %}"></script>
+  <script src="{% static 'web/js/app_view.js' %}"></script>
+  <script src="{% static 'web/js/app_preview.js' %}"></script>
+  <script>
+    {% if catalog.content %}
+      var catalog = {{ catalog.content | to_json }};
+    {% else %}
+      var catalog = { num_pages: 0, next_id: 1, width: {{catalog.width}}, height: {{catalog.height}}, pages: []};
+    {% endif %}
+  </script>
+{% endblock %}

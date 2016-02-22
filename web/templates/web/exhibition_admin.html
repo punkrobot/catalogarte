@@ -1,0 +1,215 @@
+{% extends "web/base.html" %}
+{% load staticfiles bootstrap3 %}
+
+{% block content %}
+  <div class="container-fluid well">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h2 class="page-title pull-left">Administración</h2>
+          <a href="{% url 'exhibition.create' %}" class="btn btn-material-teal pull-right title-action">
+            <i class="fa fa-plus"></i> Nueva exhibición
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 well">
+        <table class="table table-hover">
+          <thead>
+            <th>Título</th>
+            <th>Categoría</th>
+            <th>Título del catálogo</th>
+            <th>Fecha de modificación</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </thead>
+          <tbody>
+            {% for exhibition in exhibition_list %}
+              <tr class="item top-level">
+                <td><a href=" ">{{exhibition.title}}</a></td>
+                <td>{{exhibition.category.name}}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td>
+                  <a class="btn btn-material-grey btn-xs" href="{% url 'exhibition.update' exhibition.slug %}" title="Editar exhibición">
+                    <i class="fa fa-pencil"></i>
+                  </a>
+                  <a class="btn btn-material-grey btn-xs" href=" " title="Eliminar exhibición">
+                    <i class="fa fa-remove"></i>
+                  </a>
+                  <a onclick="showModal('{{exhibition.slug}}');" class="btn btn-material-teal btn-xs">
+                    <i class="fa fa-plus"></i> Catálogo
+                  </a>
+                </td>
+              </tr>
+              {% for catalog in exhibition.catalog_set.all %}
+                <tr class="item">
+                  <td></td>
+                  <td></td>
+                  <td><a href="{% url 'catalog.preview' catalog.exhibition.slug catalog.slug %}">{{catalog.title}}</a></td>
+                  <td>{{catalog.modified_date}}</td>
+                  <td>
+                    {% if catalog.status == 'created' %}
+                      <i class="fa fa-pencil"></i> Editable
+                    {% elif catalog.status == 'review' %}
+                      <i class="fa fa-lock"></i> En revisión
+                    {% elif catalog.status == 'rejected' %}
+                      <i class="fa fa-pencil"></i> Necesita cambios
+                    {% elif catalog.status == 'published' %}
+                      <i class="fa fa-check"></i> Publicado
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% if catalog.status == 'created' or catalog.status == 'rejected' %}
+                      <a class="btn btn-material-grey btn-xs" href="{% url 'catalog.editor' exhibition.slug catalog.slug %}" title="Editar catálogo">
+                        <i class="fa fa-pencil"></i>
+                      </a>
+                      <a class="btn btn-material-grey btn-xs" href="#" onclick="deleteCatalog('{% url 'catalog.view' catalog.exhibition.slug catalog.slug %}');" title="Eliminar catálogo">
+                        <i class="fa fa-remove"></i>
+                      </a>
+                      <a class="btn btn-material-teal btn-xs" href="#" onclick="publishCatalog('{% url 'catalog.publish' catalog.exhibition.slug catalog.slug %}');" title="Publicar catálogo">
+                        <i class="fa fa-check"></i> Publicar
+                      </a>
+                    {% endif %}
+                    {% if catalog.status == 'published' and catalog.issuu_url %}
+                      {%  if catalog.qr_code %}
+                        <a class="btn btn-material-teal btn-xs" title="Código QR" href="{{catalog.qr_code.url}}" target="_blank" >
+                          <i class="fa fa-qrcode"></i> Código QR
+                        </a>
+                      {% endif %}
+                      <a class="btn btn-material-teal btn-xs" href="{{catalog.issuu_url}}" title="Ver en ISSUU" target="_blank">
+                        <i class="fa fa-newspaper-o"></i> Ver en ISSUU
+                      </a>
+                    {% endif  %}
+                  </td>
+                </tr>
+              {% endfor %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- New Catalog Modal -->
+  <div class="modal fade" id="newCatalogModal" tabindex="-1" role="dialog" aria-labelledby="modalLabel">
+    <div class="modal-dialog" role="document">
+      <form id="catalogForm" action="" method="post" class="form-horizontal">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h4 class="modal-title" id="modalLabel">Nuevo catálogo</h4>
+          </div>
+          <div class="modal-body">
+            {% csrf_token %}
+            {% bootstrap_form catalog_form layout="horizontal" label_class='col-md-3' field_class='col-md-8' %}
+          </div>
+          <div class="modal-footer">
+            <a class="btn btn-default" data-dismiss="modal">Cancelar</a>
+            <button type="submit" class="btn btn-primary">Crear catálogo</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script src="{% static 'web/js/vendor/bootbox.min.js' %}"></script>
+  <script src="{% static 'web/js/vendor/jquery.json.min.js' %}"></script>
+  <script type="text/javascript">
+    function showModal(slug){
+      $("#newCatalogModal").modal("show");
+      $("#catalogForm").attr("action", "/admin/" + slug + "/catalogo");
+    }
+
+    function deleteCatalog(url){
+      bootbox.confirm("¿Estás seguro de eliminar el catálogo?", function(result) {
+        if (result) {
+          $.ajax({
+            type: 'DELETE',
+            url: url,
+            dataType: 'text',
+            success: function (data) {
+              bootbox.alert("El catálogo ha sido eliminado.");
+              location.reload();
+            },
+            error: function(data) {
+              bootbox.alert("Error al borrar catálogo, inténtalo más tarde.");
+              location.reload();
+            }
+          });
+        }
+      });
+    }
+
+    function publishCatalog(url){
+      bootbox.dialog({
+        title: "Publicar catálogo",
+        message: "<p>El catálogo se enviará a revisión antes de ser publicado.</p>"+
+                 "<div class='form-group'><div class='col-md-offset-1 col-md-10'>"+
+                 "<label><input id='pdf-checkbox' type='checkbox'> Generar PDF</label></div></div>"+
+                 "<div class='form-group'><div class='col-md-offset-1 col-md-10'>"+
+                 "<label><input id='issuu-checkbox' type='checkbox'> Publicar en ISSUU</label>"+
+                 "<p class='text-muted'>"+
+                 "Para publicar automáticamente el catálogo en ISSUU se deben configurar las credenciasles en la sección del perfil del museo."+
+                 "</p><br></div></div>",
+        buttons: {
+            success: {
+              label: "Publicar",
+              className: "btn-material-teal",
+              callback: function () {
+                var alerta = $('<div class="alert alert-dismissable alert-message" style="display: none;">');
+                alerta.append($('<button type="button" class="close" data-dismiss="alert">&times</button>'));
+                alerta.append("Publicando catálogo, por favor espere.");
+                alerta.appendTo($('body')).fadeIn(1000);
+
+                var data = {
+                  issuu: $("#issuu-checkbox:checked").length > 0,
+                  pdf: $("#pdf-checkbox:checked").length > 0
+                };
+                $.ajax({
+                  type: 'POST',
+                  url: url,
+                  contentType: 'application/json; charset=utf-8',
+                  data: $.toJSON(data),
+                  dataType: 'text',
+                  success: function (data) {
+                    $(".alert").hide();
+                    bootbox.alert("El catálogo ha sido enviado a revisión", function() {
+                      location.reload();
+                    });
+                  },
+                  error: function(data) {
+                    bootbox.alert("Error al publicar catálogo, inténtalo más tarde.", function () {
+                      location.reload();
+                    });
+                  }
+                });
+              }
+            }
+          }
+        }
+      );
+    }
+
+    function csrfSafeMethod(method) {
+      return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", $("input[name='csrfmiddlewaretoken']").val());
+            }
+        }
+    });
+
+  </script>
+{% endblock %}

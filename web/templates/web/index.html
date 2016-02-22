@@ -1,0 +1,80 @@
+{% extends "web/base_public.html" %}
+{% load staticfiles %}
+
+{% block content %}
+  <div class="container">
+    <div class="row sub-header">
+      <div class="col-md-4">
+        <img src="{% static 'web/images/logo_catalogarte.png' %}" class="img-responsive" >
+      </div>
+      <div class="col-md-8">
+        <p class="intro">
+          Repositorio en línea en el que podrás visualizar publicaciones digitales de museos. Consulta, descarga y comparte catálogos, hojas de sala, y dossiers, de nuestras exposiciones, homenajes, simposios, conferencias y demás eventos.
+        </p>
+      </div>
+    </div>
+    <div id="filters" class="row sub-header">
+      <div class="col-md-12">
+        <form class="form-inline">
+          <div class="form-group">
+            <div class="input-group">
+              <input id="search" type="text" class="form-control" placeholder="Buscar">
+              <span class="input-group-btn">
+                <button id="search_btn" class="btn btn-flat">
+                  <i class="fa fa-search"></i>
+                </button>
+              </span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="filter_cat">Categorías</label>
+            <select id="filter_cat" class="form-control filter">
+              <option value="">Todas</option>
+              {% for category in categories %}
+                <option value="{{category.slug}}">{{ category.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filter_labels">Etiquetas</label>
+            <select id="filter_labels" class="form-control filter">
+              <option value="">Todas</option>
+              {% for tag in tags %}
+                <option value="{{tag.slug}}">{{ tag.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filter_museums">Museos</label>
+            <select id="filter_museums" class="form-control filter">
+              <option value="">Todos</option>
+              {% for museum in museums %}
+                <option value="{{museum.slug}}">{{ museum.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <div id="container">
+          {% include 'web/_exhibition_list.html' %}
+        </div>
+        <div id="loading">
+          <img src="{% static 'web/images/spin.gif' %}">
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script src="{% static 'web/js/vendor/jquery.json.min.js' %}"></script>
+  <script src="{% static 'web/js/app_index.js' %}"></script>
+  <script>var searchUrl = "{% url 'search' %}";</script>
+
+{% endblock %}
+

@@ -1,0 +1,11 @@
+<div class="audio"
+     style="background:url('{{content.thumbnail}}');"
+     {{#unless editable}}data-url="{{content.url}}"{{/unless}}
+     data-local="{{content.local_file}}" >
+  {{#if content.local_file}}
+    <audio src="{{content.url}}" width="100%"></audio>
+  {{/if}}
+</div>
+<div class="footer">
+  <i class="fa fa-music"></i> {{content.title}}
+</div>

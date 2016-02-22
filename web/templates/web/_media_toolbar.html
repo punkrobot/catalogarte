@@ -1,0 +1,61 @@
+{% load thumbnail %}
+
+<h4 class="text-center">Multimedia
+  <a class="toolbar-btn pull-right" data-toggle="modal" data-target="#multimediaModal">
+    <i class="fa fa-plus list-item"></i>
+  </a>
+</h4>
+<ul class="nav nav-tabs" role="tablist">
+  <li class="active"><a href="#img-toolbar" role="tab" data-toggle="tab"><i class="fa fa-picture-o"></i></a></li>
+  <li><a href="#video-toolbar" role="tab" data-toggle="tab"><i class="fa fa-video-camera"></i></a></li>
+  <li><a href="#audio-toolbar" role="tab" data-toggle="tab"><i class="fa fa-music"></i></a></li>
+</ul>
+<div class="tab-content">
+  <div class="tab-pane active" id="img-toolbar">
+    {% for item in exhibition.get_images %}
+      {% thumbnail item.media_file "600" as thumbnail %}
+        <div class="thumb draggable" style="background-image:url({{thumbnail.url}});" data-url="{{item.media_file.url}}" data-thumbnail="{{thumbnail.url}}">
+          <i title="Eliminar" class="fa fa-times-circle fa-2x fa-fw" onclick="deleteMedia('{{ item.id }}');"></i>
+        </div>
+      {% endthumbnail %}
+    {% empty %}
+      <p class="text-muted text-center toolbar-help">
+        Agrega imágenes dando clic en el botón "+" de la esquina derecha.
+      </p>
+    {% endfor %}
+  </div>
+  <div class="tab-pane" id="video-toolbar">
+    {% for item in exhibition.get_videos %}
+      {% if item.local_file %}
+        <div class="thumb draggable thumb-video" style="background-image:url({{item.thumbnail}});" data-toggle="tooltip" data-placement="left" title="{{item.name}}" data-thumbnail="{{item.thumbnail}}" data-url="{{item.media_file.url}}" data-local-file="{{item.local_file}}">
+          <i title="Eliminar" class="fa fa-times-circle fa-2x fa-fw" onclick="deleteMedia('{{ item.id }}');"></i>
+        </div>
+      {% else %}
+        <div class="thumb draggable thumb-video" style="background-image:url({{item.thumbnail}});" data-toggle="tooltip" data-placement="left" title="{{item.name}}" data-thumbnail="{{item.thumbnail}}" data-url="{{item.external_url}}" data-local-file="{{item.local_file}}">
+          <i title="Eliminar" class="fa fa-times-circle fa-2x fa-fw" onclick="deleteMedia('{{ item.id }}');"></i>
+        </div>
+      {% endif %}
+    {% empty %}
+      <p class="text-muted text-center toolbar-help">
+        Agrega videos dando clic en el botón "+" de la esquina derecha.
+      </p>
+    {% endfor %}
+  </div>
+  <div class="tab-pane" id="audio-toolbar">
+    {% for item in exhibition.get_audios %}
+      {% if item.local_file %}
+        <div class="thumb draggable thumb-audio" style="background-image:url({{item.thumbnail}});" data-toggle="tooltip" data-placement="left" title="{{item.name}}" data-thumbnail="{{item.thumbnail}}" data-url="{{item.media_file.url}}" data-local-file="{{item.local_file}}">
+          <i title="Eliminar" class="fa fa-times-circle fa-2x fa-fw" onclick="deleteMedia('{{ item.id }}');"></i>
+        </div>
+      {% else %}
+        <div class="thumb draggable thumb-audio" style="background-image:url({{item.thumbnail}});" data-toggle="tooltip" data-placement="left" title="{{item.name}}" data-thumbnail="{{item.thumbnail}}" data-url="{{item.external_url}}" data-local-file="{{item.local_file}}">
+          <i title="Eliminar" class="fa fa-times-circle fa-2x fa-fw" onclick="deleteMedia('{{ item.id }}');"></i>
+        </div>
+      {% endif %}
+    {% empty %}
+      <p class="text-muted text-center toolbar-help">
+        Agrega clips de audio dando clic en el botón "+" de la esquina derecha.
+      </p>
+    {% endfor %}
+  </div>
+</div>
