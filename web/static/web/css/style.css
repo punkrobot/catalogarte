@@ -161,7 +161,8 @@ a:hover {
 }
 
 .museum-item {
-    height: 100px;
+    height: 110px;
+    margin-bottom: 20px;
 }
 
 .museum-item img {

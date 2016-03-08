@@ -6,7 +6,7 @@
   <div class="container-fluid no-padding">
     <div id="carousel" class="carousel slide" data-ride="carousel">
       <ol class="carousel-indicators">
-        {% for exhibition in exhibitions %}
+        {% for exhibition in exhibition_list %}
           <li data-target="#carousel" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
         {% endfor %}
       </ol>
@@ -15,6 +15,10 @@
           <div class="item {% if forloop.first %}active{% endif %}">
             <a href="{% url 'exhibition.detail' exhibition.museum.slug exhibition.slug %}">
               <div class="carousel-item" style="background-image: url('{{ exhibition.cover.url }}');"></div>
+              <div class="carousel-caption">
+                <h3>{{ exhibition.title }}</h3>
+                <h5>{{ exhibition.museum.name  }}</h5>
+              </div>
             </a>
           </div>
         {% endfor %}
