@@ -16,11 +16,8 @@
 
     {% bootstrap_css %}
     <link href="{% static 'web/css/font-awesome.min.css' %}" rel="stylesheet">
-    <link href="{% static 'web/css/clearsans.css' %}" rel="stylesheet">
-
-    {% block css %}
-      <link href="{% static 'web/css/style.css' %}" rel="stylesheet">
-    {% endblock %}
+    <link href="{% static 'web/css/style.css' %}" rel="stylesheet">
+    {% block css %}{% endblock %}
 
     <script src="{% static 'web/js/vendor/jquery-1.11.3.min.js' %}"></script>
     {% bootstrap_javascript %}
@@ -35,35 +32,62 @@
 
   <body>
     {% block navbar %}
-      <div class="navbar gray" role="navigation">
-        <div class="container">
-          <div class="navbar-header">
-            <a class="navbar-brand" href="{% url 'exhibition.admin' %}">Catalog<strong>Arte</strong></a>
+      <div class="container">
+        <nav class="navbar navbar-static-top">
+          <div class="container">
+            <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu-collapse" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <i class="fa fa-navicon"></i>
+              </button>
+              <a class="navbar-brand" href="{% url 'index' %}">
+                <img class="img-responsive" src="{% static 'web/images/logo.png' %}">
+              </a>
+            </div>
+            <div class="navbar-text navbar-right">
+              <form action="{% url 'exhibition.list' %}" class="navbar-form" role="search">
+                <div class="form-group">
+                  <div class="input-group">
+                    <input id="search" type="text" name="q" class="form-control" placeholder="Buscar">
+                    <span class="input-group-btn">
+                      <button class="btn btn-flat" type="submit"><i class="fa fa-search"></i></button>
+                    </span>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
-          <div class="navbar-collapse collapse navbar-responsive-collapse">
-            <ul class="nav navbar-nav navbar-right">
-              {% if user.is_authenticated %}
-                <li>
-                  <a title="Cerrar sesión" class="pull-right" href="/logout">
-                    <i class="fa fa-sign-out"></i>
-                  </a>
-                  <a class="avatar pull-right" href="{% url 'museum.update' %}">
-                    {{user.museum.name}}<img src="{{user.museum.logo.url}}">
-                  </a>
-                </li>
-              {% else %}
-                <li><a href="javascript:void(0)"><i class="fa fa-twitter"></i></a></li>
-                <li><a href="javascript:void(0)"><i class="fa fa-facebook"></i></a></li>
-              {% endif %}
+        </nav>
+      </div>
+    {% endblock %}
+    {% block menu %}
+      <div class="container-fluid menu">
+        <div class="container">
+          <div id="menu-collapse" class="collapse navbar-collapse">
+            <ul class="nav navbar-nav center-block">
+              <li {% if active_item == 'home' %}class="active"{% endif %}><a href="{% url 'index' %}">Inicio <span class="sr-only">(activo)</span></a></li>
+              <li {% if active_item == 'catalogos' %}class="active"{% endif %}><a href="{% url 'exhibition.list' %}">Catálogos</a></li>
+              <li {% if active_item == 'museos' %}class="active"{% endif %}><a href="{% url 'index' %}#museos">Museos</a></li>
             </ul>
           </div>
         </div>
       </div>
     {% endblock %}
 
-    {% bootstrap_messages %}
-
     {% block content %}{% endblock %}
+
+    {% block footer %}
+      <div class="container">
+        <div class="row footer">
+          <img class="img-responsive center-block" src="{% static 'web/images/logo.png' %}">
+          <p>
+            LO MEJOR DE LA CULTURA EN UNA SOLA LLAMADA 01 800 904 4000 • (55) 5282 1964 • (55) 1000 5636 • Conmutador: (55) 1000 5600 • infoinba@inba.gob.mx<br>
+            DERECHOS RESERVADOS - © - POLITICAS DE PRIVACIDAD - <a target="_blank" href="http://www.inba.gob.mx/site/contacto">CONTACTO</a><br>
+            Avenida Paseo de la Reforma y Campo Marte S/N, Col. Polanco Chapultepec, Del. Miguel Hidalgo, C. P. 11560, México D. F.
+          </p>
+        </div>
+      </div>
+    {% endblock %}
 
     {% block javascript %}{% endblock %}
 

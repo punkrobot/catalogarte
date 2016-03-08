@@ -1,0 +1,59 @@
+<nav class="navbar navbar-fixed-top catalog-nav" style="background-color:{% firstof catalog.exhibition.category.color review.catalog.exhibition.category.color %};">
+  <div class="container">
+    <div class="navbar-header contents">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <i class="fa fa-navicon"></i>
+      </button>
+      <span class="nav-logo">CatalogArte{% if nav_type == 'review' %}. Revisión de catálogo{% endif %}</span>
+      <div id="contents-dropdown" class="nav-dropdown">
+        <a href="javascript:void(0)" class="dropdown-toggle navbar-brand" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Contenido <span class="caret"></span></a>
+        <ul class="dropdown-menu"></ul>
+      </div>
+    </div>
+    {% if nav_type == 'review' and review.approved == None%}
+      <div id="navbar" class="navbar-collapse collapse">
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#" onclick="reviewCatalog('approve');"><i class="fa fa-fw fa-check"></i> Aprobar</a></li>
+          <li><a href="#" onclick="reviewCatalog('reject');"><i class="fa fa-fw fa-remove"></i> Rechazar</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li class="dropdown nav-dropdown">
+            <a id="device-switcher" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Computadoras de escritorio <span class="caret"></span></a>
+            <ul class="dropdown-menu">
+              <li><a href="#" onclick="showDesktop();">Computadoras de escritorio</a></li>
+              <li><a href="#" onclick="showMobile();">Dispositivos móviles</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    {% else %}
+      <div id="navbar" class="navbar-collapse collapse">
+        {% if nav_type == 'preview' %}
+          <ul class="nav navbar-nav navbar-right">
+            <li class="active"><a href=" " onclick="window.history.go(-1); return false;"><i class="fa fa-fw fa-caret-left"></i> Regresar</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li class="dropdown nav-dropdown">
+              <a id="device-switcher" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Computadoras de escritorio <span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#" onclick="showDesktop();">Computadoras de escritorio</a></li>
+                <li><a href="#" onclick="showMobile();">Dispositivos móviles</a></li>
+              </ul>
+            </li>
+          </ul>
+        {% else %}
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#" onclick="shareOnFacebook();" title="Compartir en facebook"><i class="fa fa-fw fa-facebook"></i></a></li>
+            <li><a href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}&via=bellasartesinba&text={{catalog.exhibition.title}}, {{catalog.title}}" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" title="Compartir en twitter"><i class="fa fa-fw fa-twitter"></i></a></li>
+            <li><a href="mailto:?&subject=CatalogArte - {{catalog.title}}&body={{request.build_absolute_uri|urlencode}}" title="Enviar por correo"><i class="fa fa-fw fa-envelope"></i></a></li>
+            {% if catalog.pdf_available %}
+              <li><a href="/{{catalog.get_pdf_filename}}" title="Descargar PDF" target="_blank"><i class="fa fa-fw fa-file-pdf-o"></i></a></li>
+            {% endif %}
+            <li class="active"><a href=" " onclick="window.history.go(-1); return false;"><i class="fa fa-fw fa-caret-left"></i> Regresar</a></li>
+          </ul>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+</nav>

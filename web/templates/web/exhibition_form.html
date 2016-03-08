@@ -1,12 +1,18 @@
 {% extends "web/base.html" %}
 {% load bootstrap3 %}
 
+{% block navbar %}
+  {% include 'web/_admin_navbar.html' %}
+{% endblock %}
+
+{% block menu %}{% endblock %}
+
 {% block content %}
   <div class="container-fluid well">
     <div class="container">
       <div class="row">
         <div class="col-md-12">
-          <h2 class="page-title">
+          <h2 class="admin-title">
             {% if object.pk %}
               Actualizar exhibición
             {% else %}
@@ -27,7 +33,7 @@
           <div class="col-md-8 col-md-offset-2">
             <hr>
             <a href="{% url 'exhibition.admin' %}" class="btn btn-default pull-left">Cancelar</a>
-            <button type="submit" class="btn btn-material-teal pull-right">Guardar</button>
+            <button type="submit" class="btn btn-primary pull-right">Guardar</button>
           </div>
           {% endbuttons %}
         </form>
@@ -39,3 +45,5 @@
 {% block head %}
   {{ form.media }}
 {% endblock %}
+
+{% block footer %}{% endblock %}

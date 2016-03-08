@@ -1,80 +1,74 @@
-{% extends "web/base_public.html" %}
+{% extends "web/base.html" %}
 {% load staticfiles %}
 
 {% block content %}
-  <div class="container">
-    <div class="row sub-header">
-      <div class="col-md-4">
-        <img src="{% static 'web/images/logo_catalogarte.png' %}" class="img-responsive" >
+
+  <div class="container-fluid no-padding">
+    <div id="carousel" class="carousel slide" data-ride="carousel">
+      <ol class="carousel-indicators">
+        {% for exhibition in exhibitions %}
+          <li data-target="#carousel" data-slide-to="{{ forloop.counter0 }}" {% if forloop.first %}class="active"{% endif %}></li>
+        {% endfor %}
+      </ol>
+      <div class="carousel-inner" role="listbox">
+        {% for exhibition in exhibition_list %}
+          <div class="item {% if forloop.first %}active{% endif %}">
+            <a href="{% url 'exhibition.detail' exhibition.museum.slug exhibition.slug %}">
+              <div class="carousel-item" style="background-image: url('{{ exhibition.cover.url }}');"></div>
+            </a>
+          </div>
+        {% endfor %}
       </div>
-      <div class="col-md-8">
-        <p class="intro">
-          Repositorio en línea en el que podrás visualizar publicaciones digitales de museos. Consulta, descarga y comparte catálogos, hojas de sala, y dossiers, de nuestras exposiciones, homenajes, simposios, conferencias y demás eventos.
-        </p>
-      </div>
-    </div>
-    <div id="filters" class="row sub-header">
-      <div class="col-md-12">
-        <form class="form-inline">
-          <div class="form-group">
-            <div class="input-group">
-              <input id="search" type="text" class="form-control" placeholder="Buscar">
-              <span class="input-group-btn">
-                <button id="search_btn" class="btn btn-flat">
-                  <i class="fa fa-search"></i>
-                </button>
-              </span>
-            </div>
-          </div>
-          <div class="form-group">
-            <label for="filter_cat">Categorías</label>
-            <select id="filter_cat" class="form-control filter">
-              <option value="">Todas</option>
-              {% for category in categories %}
-                <option value="{{category.slug}}">{{ category.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="filter_labels">Etiquetas</label>
-            <select id="filter_labels" class="form-control filter">
-              <option value="">Todas</option>
-              {% for tag in tags %}
-                <option value="{{tag.slug}}">{{ tag.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="filter_museums">Museos</label>
-            <select id="filter_museums" class="form-control filter">
-              <option value="">Todos</option>
-              {% for museum in museums %}
-                <option value="{{museum.slug}}">{{ museum.name }}</option>
-              {% endfor %}
-            </select>
-          </div>
-        </form>
-      </div>
+      <a class="left carousel-control" href="#carousel" role="button" data-slide="prev">
+        <span class="fa fa-chevron-left icon-prev" aria-hidden="true"></span>
+        <span class="sr-only">Anterior</span>
+      </a>
+      <a class="right carousel-control" href="#carousel" role="button" data-slide="next">
+        <span class="fa fa-chevron-right icon-next" aria-hidden="true"></span>
+        <span class="sr-only">Siguiente</span>
+      </a>
     </div>
   </div>
+
   <div class="container">
+
+    <img style="width:100%;margin-bottom: 20px;" src="{% static 'web/images/placeholder.png' %}" >
+
+    <h3 class="section-header">Catálogos</h3>
+    <div class="row categories">
+      <div class="col-sm-4">
+        <a href="{% url 'exhibition.list' %}?categoria=exposiciones-temporales" class="item single purple"><span>Exposiciones Temporales</span></a>
+        <a href="{% url 'exhibition.list' %}?categoria=colecciones" class="item double pink"><span>Colecciones</span></a>
+      </div>
+      <div class="col-sm-4">
+        <a href="{% url 'exhibition.list' %}?categoria=actividades-paralelas" class="item double orange"><span>Actividades Paralelas</span></a>
+        <a href="{% url 'exhibition.list' %}?categoria=homenajes-y-reconocimientos" class="item single dark-blue"><span>Homenajes y Reconocimientos</span></a>
+      </div>
+      <div class="col-sm-4">
+        <a href="{% url 'exhibition.list' %}?categoria=artistas-visuales" class="item single blue"><span>Artistas Visuales</span></a>
+        <a href="{% url 'exhibition.list' %}?categoria=publicaciones-historicas" class="item double teal"><span>Publicaciones Históricas</span></a>
+      </div>
+    </div>
+
+    <a name="museos"></a>
+    <h3 class="section-header">Museos</h3>
     <div class="row">
-      <div class="col-md-12">
-        <div id="container">
-          {% include 'web/_exhibition_list.html' %}
-        </div>
-        <div id="loading">
-          <img src="{% static 'web/images/spin.gif' %}">
-        </div>
-      </div>
+      {% for museum in museums %}
+        <a href="{% url 'museum.detail' museum.slug %}">
+          <div class="col-sm-4 museum-item">
+            <img src="{{ museum.logo.url }}">
+            <div>{{ museum.name }}</div>
+          </div>
+        </a>
+      {% endfor %}
     </div>
-  </div>
+
 {% endblock %}
 
 {% block javascript %}
-  <script src="{% static 'web/js/vendor/jquery.json.min.js' %}"></script>
-  <script src="{% static 'web/js/app_index.js' %}"></script>
-  <script>var searchUrl = "{% url 'search' %}";</script>
-
+  <script>
+    $(function() {
+      $('.carousel').carousel();
+    });
+  </script>
 {% endblock %}
-

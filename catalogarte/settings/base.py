@@ -7,7 +7,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__fil
 
 INSTALLED_APPS = (
     'web',
-    'suit',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -85,29 +84,6 @@ CKEDITOR_CONFIGS = {
 }
 
 BOOTSTRAP3 = {
-    'theme_url': '/static/web/css/material.min.css',
     'css_url': '/static/web/css/bootstrap.min.css',
     'javascript_url': '/static/web/js/vendor/bootstrap.min.js',
-}
-
-
-SUIT_CONFIG = {
-    'ADMIN_NAME': 'Administración CatalogArte',
-    'HEADER_DATE_FORMAT': 'l, j F Y',
-    'HEADER_TIME_FORMAT': 'H:i',
-
-    'MENU_OPEN_FIRST_CHILD': False,
-    'MENU': (
-        {
-            'app': 'auth',
-            'label': 'Usuarios',
-            'icon':'icon-lock',
-            'models': ('user')
-        },
-        {
-            'app': 'web',
-            'label': 'CatalogArte',
-            'icon': 'icon-picture',
-        },
-    ),
 }

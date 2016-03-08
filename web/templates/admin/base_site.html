@@ -1,22 +1,11 @@
 {% extends "admin/base.html" %}
-{% load admin_static %}
 
-{#{% block extrahead %}#}
-{#{% endblock %}#}
+{% block title %}Administración CatalogArte{% endblock %}
 
-{#{% block extrastyle %}#}
-{#{% endblock %}#}
-
-{#{% block extrajs %}#}
-{#{% endblock %}#}
-
-{% block footer_links %}
-  CatalogArte - Instituto Nacional de Bellas Artes - CONACULTA
+{% block branding %}
+  <h1 id="site-name">
+    <a href="{% url 'admin:index' %}">Administración CatalogArte</a>
+  </h1>
 {% endblock %}
 
-{% block footer_branding %}
-{% endblock %}
-
-{% block copyright %}
-  Copyright &copy; 2015 INBA <br>Desarrollado por <a href="http://bytecraft.mx" target="_blank">byteCraft.mx</a>
-{% endblock %}
+{% block nav-global %}{% endblock %}

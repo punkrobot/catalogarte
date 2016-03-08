@@ -2,14 +2,16 @@
 {% load filters staticfiles %}
 
 {% block navbar %}{% endblock %}
+{% block menu %}{% endblock %}
 
 {% block content %}
   <div class="catalog"></div>
 {% endblock %}
 
+{% block footer %}{% endblock %}
+
 {% block bootstrap_css %}
   <link href="{% static 'web/css/bootstrap.min.css' %}" rel="stylesheet" media="all">
-  <link href="{% static 'web/css/material.min.css' %}" rel="stylesheet" media="all">
 {% endblock %}
 
 {% block css %}

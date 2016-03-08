@@ -1,12 +1,11 @@
 ajaxuploader==0.3.8
-Django==1.8.5
+Django==1.9.3
 django-autoslug==1.9.3
 django-bootstrap3==6.2.2
 django-braces==1.8.1
 django-ckeditor==5.0.2
 django-datetime-widget==0.9.3
 django-model-utils==2.3.1
-django-suit==0.2.15
 jsonfield==1.0.3
 Pillow==3.0.0
 psycopg2==2.5.2

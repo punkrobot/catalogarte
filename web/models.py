@@ -186,7 +186,8 @@ class Catalog(StatusModel):
             review_group = Group.objects.get(name="revisor")
             reviewers = review_group.user_set.all()
             for reviewer in reviewers:
-                send_mail(subject, message, settings.ADMIN_EMAIL, [reviewer.email])
+                send_mail(subject, message, settings.ADMIN_EMAIL, [reviewer.email],
+                          fail_silently=True)
                 Review.objects.filter(reviewer=reviewer, catalog__slug=self.slug).delete()
                 review = Review(reviewer=reviewer, catalog=self)
                 review.save()
@@ -199,7 +200,8 @@ class Catalog(StatusModel):
             message = u"El catálogo '{}' de la exhibición '{}' fue aprobado y publicado. " \
                       u"Acceda al siguiente enlace para consultarlo y difundirlo: \n " \
                       u"{}".format(self.title, self.exhibition.title, self.get_published_url())
-            send_mail(subject, message, settings.ADMIN_EMAIL, [self.exhibition.museum.user.email])
+            send_mail(subject, message, settings.ADMIN_EMAIL, [self.exhibition.museum.user.email],
+                      fail_silently=True)
 
             self.generate_qr_code()
 
@@ -257,7 +259,7 @@ class Review(TimeStampedModel):
                       u"{}".format(self.catalog.title, self.catalog.exhibition.title, self.comments,
                                    settings.HOSTNAME+self.catalog.get_absolute_url())
             send_mail(subject, message, settings.ADMIN_EMAIL,
-                      [self.catalog.exhibition.museum.user.email])
+                      [self.catalog.exhibition.museum.user.email], fail_silently=True)
 
         super(Review, self).save(*args, **kwargs)
 
@@ -266,6 +268,7 @@ class Review(TimeStampedModel):
 class Category(models.Model):
     name = models.CharField("Nombre", max_length=50)
     slug = AutoSlugField(populate_from='name')
+    color = models.CharField("Color", max_length=7, help_text="Hex Value", default="#000000")
 
     class Meta:
         verbose_name = "Categoría"

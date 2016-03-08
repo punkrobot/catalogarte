@@ -1,0 +1,64 @@
+{% extends "web/base.html" %}
+{% load staticfiles %}
+
+{% block menu %}
+  {% with active_item='catalogos' %}
+    {{ block.super }}
+  {% endwith %}
+{% endblock menu %}
+
+{% block content %}
+
+  <div class="container-fluid page-title green">
+    Catálogos
+  </div>
+
+  <div class="container">
+    <div id="filters" class="row">
+      <div class="col-md-12">
+        <form class="form-inline text-center">
+          <div class="form-group">
+            <label for="filter_cat">Categorías</label>
+            <select id="filter_cat" class="form-control filter">
+              <option value="">Todas</option>
+              {% for category in categories %}
+                <option value="{{category.slug}}">{{ category.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filter_labels">Etiquetas</label>
+            <select id="filter_labels" class="form-control filter">
+              <option value="">Todas</option>
+              {% for tag in tags %}
+                <option value="{{tag.slug}}">{{ tag.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="filter_museums">Museos</label>
+            <select id="filter_museums" class="form-control filter">
+              <option value="">Todos</option>
+              {% for museum in museums %}
+                <option value="{{museum.slug}}">{{ museum.name }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="row exhibitions">
+      {% include 'web/_exhibition_items.html' %}
+    </div>
+    <div id="loading">
+      <img src="{% static 'web/images/spin.gif' %}">
+    </div>
+  </div>
+{% endblock %}
+
+{% block javascript %}
+  <script src="{% static 'web/js/vendor/jquery.json.min.js' %}"></script>
+  <script src="{% static 'web/js/app_public_list.js' %}"></script>
+  <script>var searchUrl = "{% url 'search' %}";</script>
+{% endblock %}
+

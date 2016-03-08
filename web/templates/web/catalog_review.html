@@ -2,37 +2,10 @@
 {% load filters staticfiles %}
 
 {% block navbar %}
-  <nav class="navbar navbar-default navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <a class="navbar-brand" href=" ">CatalogArte. Revisión del catálogo</a>
-      </div>
-      {% if review.approved == None %}
-        <div id="navbar" class="navbar-collapse collapse">
-          <ul class="nav navbar-nav navbar-left">
-            <li class="dropdown">
-              <a id="device-switcher" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Computadoras de escritorio <span class="caret"></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="#" onclick="showDesktop();">Computadoras de escritorio</a></li>
-                <li><a href="#" onclick="showMobile();">Dispositivos móviles</a></li>
-              </ul>
-            </li>
-          </ul>
-          <ul class="nav navbar-nav navbar-right">
-            <li><a href="#" onclick="reviewCatalog('approve');"><i class="fa fa-fw fa-check"></i> Aprobar</a></li>
-            <li><a href="#" onclick="reviewCatalog('reject');"><i class="fa fa-fw fa-remove"></i> Rechazar</a></li>
-          </ul>
-        </div>
-      {% endif %}
-    </div>
-  </nav>
+  {% include "web/_catalog_navbar.html" with nav_type='review' %}
 {% endblock %}
+
+{% block menu %}{% endblock %}
 
 {% block content %}
   {% if review.approved == None %}
@@ -59,7 +32,6 @@
 {% block css %}
   <link href="{% static "web/css/magnific-popup.css" %}" rel="stylesheet">
   <link href="{% static "web/mediaelement/mediaelementplayer.min.css" %}" rel="stylesheet">
-  <link href="{% static "web/css/view.css" %}" rel="stylesheet">
 {% endblock %}
 
 {% block javascript %}
@@ -78,66 +50,7 @@
     {% else %}
       var catalog = { num_pages: 0, next_id: 1, width: {{review.catalog.width}}, height: {{review.catalog.height}}, pages: []};
     {% endif %}
-
-    function reviewCatalog(action){
-      if (action === "approve") {
-        var post_data = {
-          review_id: {{ review.id }},
-          action: action,
-          comments: ""
-        };
-        sendAction(post_data);
-      } else {
-        bootbox.prompt("¿Cuál es el motivo del rechazo?", function (result) {
-          if (result !== null) {
-            if(result !== "") {
-              var post_data = {
-                review_id: {{ review.id }},
-                action: action,
-                comments: result
-              };
-              sendAction(post_data);
-            } else {
-              bootbox.alert("Error. Debes ingresar un motivo.");
-            }
-          }
-        });
-      }
-    }
-
-    function sendAction(post_data){
-      var actionStr = post_data.action == "approve" ? "aprobar" : "rechazar";
-      bootbox.confirm("¿Estás seguro de " + actionStr + " el catálogo?", function(result) {
-        if (result) {
-          var alerta = $('<div class="alert alert-dismissable alert-message" style="display: none;">');
-          alerta.append($('<button type="button" class="close" data-dismiss="alert">&times</button>'));
-          alerta.append("Publicando catálogo, por favor espere.");
-          alerta.appendTo($('body')).fadeIn(500);
-
-          $.ajax({
-            type: "POST",
-            url: "{% url 'catalog.review' review.catalog.exhibition.museum.slug review.catalog.exhibition.slug review.catalog.slug %}",
-            contentType: "application/json; charset=utf-8",
-            data: $.toJSON(post_data),
-            success: function(data) {
-              location.reload();
-            }
-          });
-        }
-      });
-    }
-
-    function csrfSafeMethod(method) {
-        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-    }
-
-    $.ajaxSetup({
-        beforeSend: function(xhr, settings) {
-            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                xhr.setRequestHeader("X-CSRFToken", $("input[name='csrfmiddlewaretoken']").val());
-            }
-        }
-    });
-
+    var reviewId = {{ review.id }};
+    var reviewUrl = "{% url 'catalog.review' review.catalog.exhibition.museum.slug review.catalog.exhibition.slug review.catalog.slug %}";
   </script>
 {% endblock %}

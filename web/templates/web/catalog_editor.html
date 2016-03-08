@@ -1,8 +1,14 @@
 {% extends "web/base.html" %}
 {% load filters staticfiles %}
 
+{% block navbar %}
+  {% include 'web/_admin_navbar.html' %}
+{% endblock %}
+
+{% block menu %}{% endblock %}
+
 {% block content %}
-  <div class="workspace">
+  <div class="workspace clearfix">
     <div class="toolbar-container">
       <div class="toolbar" data-spy="affix" data-offset-top="65">
         {% include "web/_settings_toolbar.html" %}
@@ -197,6 +203,8 @@
 
   {% csrf_token %}
 {% endblock %}
+
+{% block footer %}{% endblock %}
 
 {% block css %}
   {{ block.super }}

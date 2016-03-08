@@ -1,55 +1,40 @@
 {% extends "web/base.html" %}
 {% load filters staticfiles %}
 
-{% block meta %}
-  <meta property="og:url" content="{{request.build_absolute_uri|urlencode}}" />
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="CatalogArte"/>
-  <meta property="og:title" content="{{catalog.exhibition.title}}" />
-  <meta property="og:description" content="{{catalog.exhibition.description}}" />
-  <meta property="og:image" content="{{hostname}}{{catalog.exhibition.cover.url}}" />
-{% endblock %}
+{% if action == 'view' %}
+  {% block meta %}
+    <meta property="og:url" content="{{request.build_absolute_uri|urlencode}}" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CatalogArte"/>
+    <meta property="og:title" content="{{catalog.exhibition.title}}" />
+    <meta property="og:description" content="{{catalog.exhibition.description}}" />
+    <meta property="og:image" content="{{hostname}}{{catalog.exhibition.cover.url}}" />
+    <meta name="theme-color" content="{% firstof catalog.exhibition.category.color review.catalog.exhibition.category.color %}">
+  {% endblock %}
+{% endif %}
 
 {% block navbar %}
-  <nav class="navbar gray navbar-fixed-top">
-    <div class="container">
-      <div class="navbar-header contents">
-        <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-        <span class="logo">Catalog<strong>Arte</strong></span>
-        <div id="contents-dropdown">
-          <a href="javascript:void(0)" class="dropdown-toggle navbar-brand" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Contenido <span class="caret"></span></a>
-          <ul class="dropdown-menu"></ul>
-        </div>
-      </div>
-      <div id="navbar" class="navbar-collapse collapse">
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="#" onclick="shareOnFacebook();" title="Compartir en facebook"><i class="fa fa-fw fa-facebook"></i></a></li>
-          <li><a href="https://twitter.com/share?url={{request.build_absolute_uri|urlencode}}&via=bellasartesinba&text={{catalog.exhibition.title}}, {{catalog.title}}" onclick="javascript:window.open(this.href, '', 'menubar=no,toolbar=no,resizable=yes,scrollbars=yes,height=300,width=600');return false;" target="_blank" title="Compartir en twitter"><i class="fa fa-fw fa-twitter"></i></a></li>
-          <li><a href="mailto:?&subject=CatalogArte - {{catalog.title}}&body={{request.build_absolute_uri|urlencode}}" title="Enviar por correo"><i class="fa fa-fw fa-envelope"></i></a></li>
-          {% if catalog.pdf_available %}
-            <li><a href="/{{catalog.get_pdf_filename}}" title="Descargar PDF" target="_blank"><i class="fa fa-fw fa-file-pdf-o"></i></a></li>
-          {% endif %}
-          <li class="active"><a href=" " onclick="window.history.go(-1); return false;"><i class="fa fa-fw fa-caret-left"></i> Regresar</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+  {% include "web/_catalog_navbar.html" with nav_type=action %}
 {% endblock %}
 
+{% block menu %}{% endblock %}
+
 {% block content %}
-  <div class="catalog">
-    <div class="frame">
-      <ul class="slidee"></ul>
+  {% if review.approved != None %}
+    <div class="review-done text-center">
+      Gracias por revisar este catálogo.
     </div>
-    <div class="scrollbar">
-      <div class="handle"></div>
+  {% else %}
+    <div class="catalog">
+      <div class="frame">
+        <ul class="slidee"></ul>
+      </div>
+      <div class="scrollbar">
+        <div class="handle"></div>
+      </div>
     </div>
-  </div>
+  {% endif %}
+  {% csrf_token %}
 {% endblock %}
 
 {% block head %}
@@ -59,38 +44,64 @@
 {% block css %}
   <link href="{% static "web/css/magnific-popup.css" %}" rel="stylesheet">
   <link href="{% static "web/mediaelement/mediaelementplayer.min.css" %}" rel="stylesheet">
-  <link href="{% static "web/css/view.css" %}" rel="stylesheet">
 {% endblock %}
 
+{% block footer %}{% endblock %}
+
 {% block javascript %}
+  {% if action == 'review' or action == 'preview' %}
+    <script src="{% static 'web/js/vendor/jquery.json.min.js' %}"></script>
+    <script src="{% static 'web/js/vendor/bootbox.min.js' %}"></script>
+  {% endif %}
+
   <script src="{% static "web/js/vendor/sly.min.js" %}"></script>
   <script src="{% static "web/js/vendor/jquery.magnific-popup.min.js" %}"></script>
   <script src="{% static 'web/js/vendor/handlebars.runtime-v4.0.4.js' %}"></script>
   <script src="{% static 'web/js/templates_compiled.js' %}"></script>
   <script src="{% static 'web/js/app.js' %}"></script>
   <script src="{% static 'web/js/app_view.js' %}"></script>
+
+  {% if action == 'preview' or action == 'review' %}
+    <script src="{% static 'web/js/app_preview.js' %}"></script>
+  {% endif %}
+
+  {% if action == 'review' %}
+    <script src="{% static 'web/js/app_review.js' %}"></script>
+  {% endif %}
+
   <script>
     {% if catalog.content %}
       var catalog = {{ catalog.content | to_json }};
+    {% elif review.catalog.content %}
+      var catalog = {{ review.catalog.content | to_json }};
     {% else %}
-      var catalog = { num_pages: 0, next_id: 1, width: {{catalog.width}}, height: {{catalog.height}}, pages: []};
+      var catalog = { num_pages: 0, next_id: 1, width: {% firstof catalog.width review.catalog.width %}, height: {% firstof catalog.height review.catalog.height %}, pages: []};
+    {% endif %}
+    {% if action == 'review' %}
+      var reviewId = {{ review.id }};
+      var reviewUrl = "{% url 'catalog.review' review.catalog.exhibition.museum.slug review.catalog.exhibition.slug review.catalog.slug %}";
     {% endif %}
   </script>
-  <script>
-    window.fbAsyncInit = function() {
-      FB.init({
-        appId      : '1650742825185279',
-        xfbml      : true,
-        version    : 'v2.5'
-      });
-    };
 
-    (function(d, s, id){
-       var js, fjs = d.getElementsByTagName(s)[0];
-       if (d.getElementById(id)) {return;}
-       js = d.createElement(s); js.id = id;
-       js.src = "//connect.facebook.net/en_US/sdk.js";
-       fjs.parentNode.insertBefore(js, fjs);
-    }(document, 'script', 'facebook-jssdk'));
-  </script>
+  {% if action == 'view' %}
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId      : '1650742825185279',
+          xfbml      : true,
+          version    : 'v2.5'
+        });
+      };
+
+      (function(d, s, id){
+         var js, fjs = d.getElementsByTagName(s)[0];
+         if (d.getElementById(id)) {return;}
+         js = d.createElement(s); js.id = id;
+         js.src = "//connect.facebook.net/en_US/sdk.js";
+         fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+    </script>
+  {% endif %}
+
 {% endblock %}
+

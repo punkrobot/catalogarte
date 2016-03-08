@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, get_list_or_404
-from django.views.generic import View, CreateView, DetailView, ListView, UpdateView
+from django.views.generic import View, CreateView, DetailView, ListView, UpdateView, TemplateView
 
 from ajaxuploader.views import AjaxFileUploader
 from ajaxuploader.backends.default_storage import DefaultStorageUploadBackend
@@ -24,6 +24,18 @@ def _get_exhibition(user, slug):
 def _get_catalog(user, ex_slug, slug):
     return get_object_or_404(Catalog, exhibition__museum__id=user.museum.id,
                              exhibition__slug=ex_slug, slug=slug)
+
+
+class Index(TemplateView):
+    template_name = "web/index.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(Index, self).get_context_data(**kwargs)
+        context["museums"] = Museum.objects.all().order_by("slug")
+        context["exhibition_list"] = Exhibition.objects.filter(
+            catalog__status=Catalog.STATUS.published
+        ).distinct().order_by("-created")[:5]
+        return context
 
 
 class MuseumUpdate(LoginRequiredMixin, UpdateView):
@@ -90,7 +102,7 @@ class ExhibitionUpdate(LoginRequiredMixin, UpdateView):
 
 
 class ExhibitionList(ListView):
-    template_name = "web/index.html"
+    template_name = "web/exhibition_list.html"
 
     def get_queryset(self):
         return Exhibition.objects.filter(
@@ -99,9 +111,9 @@ class ExhibitionList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(ExhibitionList, self).get_context_data(**kwargs)
-        context["categories"] = Category.objects.all()
-        context["museums"] = Museum.objects.all()
-        context["tags"] = Tag.objects.all()
+        context["categories"] = Category.objects.all().order_by("slug")
+        context["tags"] = Tag.objects.all().order_by("slug")
+        context["museums"] = Museum.objects.all().order_by("slug")
         return context
 
 
@@ -133,7 +145,7 @@ class ExhibitionSearch(AjaxResponseMixin, View):
             ).distinct().order_by("-created")[:30]
         }
 
-        return render(request, "web/_exhibition_list.html", context)
+        return render(request, "web/_exhibition_items.html", context)
 
 
 class ExhibitionDetail(DetailView):
@@ -147,7 +159,7 @@ class ExhibitionDetail(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super(ExhibitionDetail, self).get_context_data(**kwargs)
-        context["catalogs"] = Catalog.objects.filter(
+        context["catalog_list"] = Catalog.objects.filter(
             exhibition__slug=self.kwargs.get("slug"), status=Catalog.STATUS.published
         )
         return context
@@ -163,10 +175,15 @@ class CatalogCreate(LoginRequiredMixin, CreateView):
 
 class CatalogPreview(LoginRequiredMixin, DetailView):
     model = Catalog
-    template_name = "web/catalog_preview.html"
+    template_name = "web/catalog_view.html"
 
     def get_object(self):
         return _get_catalog(self.request.user, self.kwargs.get("ex_slug"), self.kwargs.get("slug"))
+
+    def get_context_data(self, **kwargs):
+        context = super(CatalogPreview, self).get_context_data(**kwargs)
+        context["action"] = "preview"
+        return context
 
 
 class CatalogEditor(LoginRequiredMixin, UpdateView):
@@ -175,7 +192,9 @@ class CatalogEditor(LoginRequiredMixin, UpdateView):
     template_name = "web/catalog_editor.html"
 
     def get_object(self):
-        return _get_catalog(self.request.user, self.kwargs.get("ex_slug"), self.kwargs.get("slug"))
+        return get_object_or_404(Catalog, exhibition__museum__id=self.request.user.museum.id,
+                                 exhibition__slug=self.kwargs.get("ex_slug"),
+                                 slug=self.kwargs.get("slug"), status__in=["created", "rejected"])
 
     def get_context_data(self, **kwargs):
         context = super(CatalogEditor, self).get_context_data(**kwargs)
@@ -235,7 +254,8 @@ class CatalogReview(LoginRequiredMixin, GroupRequiredMixin, AjaxResponseMixin, V
                                  catalog__exhibition__slug=ex_slug,
                                  catalog__slug=slug)
 
-        return render(request, 'web/catalog_review.html', {"review": review[0]})
+        return render(request, 'web/catalog_view.html',
+                      {"review": review[0], "action": "review"})
 
     def post_ajax(self, request, m_slug, ex_slug, slug):
         data = json.loads(request.body)
@@ -265,6 +285,7 @@ class CatalogDetail(DetailView):
     def get_context_data(self, **kwargs):
         context = super(CatalogDetail, self).get_context_data(**kwargs)
         context["hostname"] = settings.HOSTNAME
+        context["action"] = "view"
         return context
 
 

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django.conf.urls import url
+from django.contrib.auth.views import login, logout
 
 from . import views
 
@@ -8,11 +9,8 @@ urlpatterns = [
 
     # Auth url's
 
-    url(r'^login/$',
-        'django.contrib.auth.views.login', {'template_name': 'web/login.html'}),
-
-    url(r'^logout$',
-        'django.contrib.auth.views.logout', {'next_page': '/admin'}),
+    url(r'^login/$', login, {'template_name': 'web/login.html'}),
+    url(r'^logout$', logout, {'next_page': '/admin'}),
 
     # Admin url's
 
@@ -65,10 +63,13 @@ urlpatterns = [
     # Public url's
 
     url(r'^$',
-        views.ExhibitionList.as_view(), name='index'),
+        views.Index.as_view(), name='index'),
 
     url(r'^search/$',
         views.ExhibitionSearch.as_view(), name='search'),
+
+    url(r'^catalogos/$',
+        views.ExhibitionList.as_view(), name='exhibition.list'),
 
     url(r'^(?P<slug>[\w-]+)/$',
         views.MuseumDetail.as_view(), name='museum.detail'),
