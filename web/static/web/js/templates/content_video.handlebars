@@ -17,7 +17,7 @@
 {{#unless editable}}
   {{#if content.local_file}}
     <div id="{{content.id}}_video" class="mfp-hide">
-      <video src="{{content.url}}"></video>
+      <video src="{{content.url}}" preload="none"></video>
     </div>
   {{/if}}
 {{/unless}}

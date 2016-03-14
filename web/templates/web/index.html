@@ -15,9 +15,12 @@
           <div class="item {% if forloop.first %}active{% endif %}">
             <a href="{% url 'exhibition.detail' exhibition.museum.slug exhibition.slug %}">
               <div class="carousel-item" style="background-image: url('{{ exhibition.cover.url }}');"></div>
+              <div class="carousel-label" style="background-color: {{ exhibition.category.color }};">
+                {{ exhibition.category.name }}
+              </div>
               <div class="carousel-caption">
-                <h3>{{ exhibition.title }}</h3>
-                <h5>{{ exhibition.museum.name  }}</h5>
+                <h1>{{ exhibition.title }}</h1>
+                <h3>{{ exhibition.museum.name  }}</h3>
               </div>
             </a>
           </div>

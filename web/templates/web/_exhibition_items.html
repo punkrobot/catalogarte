@@ -1,7 +1,11 @@
 {% for exhibition in exhibition_list %}
   <a href="{% url 'exhibition.detail' exhibition.museum.slug exhibition.slug %}">
     <div class="col-md-3 col-sm-6 col-xs-12 exhibition-item">
-      <div class="image" style="background-image:url({{ exhibition.cover.url }});"></div>
+      {% if exhibition.cover_alt %}
+        <div class="image" style="background-image:url({{ exhibition.cover_alt.url }});"></div>
+      {% else %}
+        <div class="image" style="background-image:url({{ exhibition.cover.url }});"></div>
+      {% endif %}
       <div class="cover" style="background-color:{{ exhibition.category.color }};">
         <div class="details">
           <h4>{{ exhibition.title }}</h4>

@@ -81,7 +81,10 @@ class Exhibition(TimeStampedModel):
     end_date = models.DateTimeField("Fecha final", null=True, blank=True)
     category = models.ForeignKey("Category", verbose_name="Categoría")
     tags = models.ManyToManyField("Tag", verbose_name="Etiquetas")
-    cover = models.ImageField("Portada", upload_to=get_exhibition_file_path)
+    cover = models.ImageField("Portada", help_text="Tamaño recomendado 1900x600",
+                              upload_to=get_exhibition_file_path)
+    cover_alt = models.ImageField("Portada alterna", help_text="Tamaño recomendado 280x250",
+                                  upload_to=get_exhibition_file_path, null=True, blank=True)
 
     class Meta:
         verbose_name = "Exhibición"

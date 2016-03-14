@@ -38,10 +38,12 @@
 {% endblock %}
 
 {% block head %}
+  <script src="{% static 'web/js/vendor/pace.min.js' %}"></script>
   <script src="{% static 'web/mediaelement/mediaelement-and-player.min.js' %}"></script>
 {% endblock %}
 
 {% block css %}
+  <link href="{% static "web/css/pace.css" %}" rel="stylesheet">
   <link href="{% static "web/css/magnific-popup.css" %}" rel="stylesheet">
   <link href="{% static "web/mediaelement/mediaelementplayer.min.css" %}" rel="stylesheet">
 {% endblock %}

@@ -125,7 +125,7 @@ templates['content_video'] = template({"1":function(container,depth0,helpers,par
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.content : depth0)) != null ? stack1.id : stack1), depth0))
     + "_video\" class=\"mfp-hide\">\r\n      <video src=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.content : depth0)) != null ? stack1.url : stack1), depth0))
-    + "\"></video>\r\n    </div>\r\n";
+    + "\" preload=\"none\"></video>\r\n    </div>\r\n";
 },"compiler":[7,">= 4.0.0"],"main":function(container,depth0,helpers,partials,data) {
     var stack1, alias1=depth0 != null ? depth0 : {}, alias2=container.lambda, alias3=container.escapeExpression;
 
