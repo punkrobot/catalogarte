@@ -1,11 +1,14 @@
 # -*- coding: utf-8 -*-
 
+import math
+
 from django.conf import settings
 from django.core.files.base import ContentFile
 from django.core.mail import send_mail
 from django.db import models
 from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
+from django.db.models import Count
 from django.dispatch import receiver
 from django.utils.encoding import python_2_unicode_compatible
 
@@ -80,10 +83,12 @@ class Exhibition(TimeStampedModel):
     start_date = models.DateTimeField("Fecha inicial", null=True, blank=True)
     end_date = models.DateTimeField("Fecha final", null=True, blank=True)
     category = models.ForeignKey("Category", verbose_name="Categoría")
-    tags = models.ManyToManyField("Tag", verbose_name="Etiquetas")
+    tags = models.ManyToManyField("Tag", verbose_name="Etiquetas",
+                                  help_text="Mantenga presionado Control o Command en una Mac "
+                                            "para seleccionar más de una opción.")
     cover = models.ImageField("Portada", help_text="Tamaño recomendado 1900x600",
                               upload_to=get_exhibition_file_path)
-    cover_alt = models.ImageField("Portada alterna", help_text="Tamaño recomendado 280x250",
+    cover_alt = models.ImageField("Portada miniatura", help_text="Tamaño recomendado 280x250",
                                   upload_to=get_exhibition_file_path, null=True, blank=True)
 
     class Meta:
@@ -280,10 +285,29 @@ class Category(models.Model):
         return self.name
 
 
+class TagManager(models.Manager):
+    def tag_cloud(self):
+        tags = []
+        tags_qs = self.filter(exhibition__catalog__status=Catalog.STATUS.published).annotate(
+            num=Count('exhibition')
+        ).filter(num__gt=0).order_by("-num")[:20]
+        if tags_qs:
+            max_value = float(tags_qs[0].num)
+            for tag in tags_qs:
+                tags.append({
+                    "text": tag.name,
+                    "weight": int(math.ceil((5 * tag.num) / max_value)),
+                    "link": reverse("exhibition.list") + "?etiqueta=" + tag.slug
+                })
+        return tags
+
+
 @python_2_unicode_compatible
 class Tag(models.Model):
     name = models.CharField("Nombre", max_length=50)
     slug = AutoSlugField(populate_from='name')
+
+    objects = TagManager()
 
     class Meta:
         verbose_name = "Etiqueta"

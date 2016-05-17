@@ -31,6 +31,7 @@ class Index(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(Index, self).get_context_data(**kwargs)
+        context["tags"] = Tag.objects.tag_cloud()
         context["museums"] = Museum.objects.all().order_by("slug")
         context["exhibition_list"] = Exhibition.objects.filter(
             catalog__status=Catalog.STATUS.published

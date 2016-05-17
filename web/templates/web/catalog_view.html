@@ -19,13 +19,27 @@
 
 {% block menu %}{% endblock %}
 
+{% block body %}
+  <div class="cover">
+    <h1 class="text-center">{{ catalog.exhibition.title }}<br><small>{{ catalog.exhibition.subtitle }}</small></h1>
+    <h2 class="text-center">{{ catalog.exhibition.museum.name }}</h2>
+    <div class="cover-footer text-center">
+      <h4 class="text-muted">Navegación:</h4>
+      <span class="hidden-xs hidden-sm text-muted"><i class="fa fa-fw fa-arrows-v"></i> Rueda de desplazamiento del mouse</span>
+      <br class="hidden-xs hidden-sm"><span class="hidden-xs hidden-sm text-muted"><i class="fa fa-fw fa-keyboard-o"></i> Teclas derecha e izquierda del teclado</span>
+      <span class="hidden-md hidden-lg text-muted"><i class="fa fa-fw fa-arrows-h"></i> Desliza a la izquierda y derecha</span>
+    </div>
+    <a class="center-block btn-start" onclick="start();">Iniciar <i class="fa fa-fw fa-caret-right"></i></a>
+  </div>
+{% endblock %}
+
 {% block content %}
   {% if review.approved != None %}
     <div class="review-done text-center">
       Gracias por revisar este catálogo.
     </div>
   {% else %}
-    <div class="catalog">
+    <div class="catalog" oncontextmenu="return false">
       <div class="frame">
         <ul class="slidee"></ul>
       </div>

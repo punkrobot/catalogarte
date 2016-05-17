@@ -10,8 +10,10 @@
 {% block content %}
 
   <div class="container-fluid page-title" style="background-color:{{ exhibition.category.color }};">
-    {{ exhibition.title }}<br>
-    <small>&nbsp;{{ exhibition.subtitle }}</small>
+    {{ exhibition.title }}
+    {% if exhibition.subtitle %}
+      <br><small>{{ exhibition.subtitle }}</small>
+    {% endif %}
   </div>
 
   <div class="container-fluid no-padding">
@@ -23,7 +25,7 @@
   <div class="container exhibition">
     <div class="row">
       <div class="col-md-6">
-        <p class="lead">{{ exhibition.description }}</p>
+        <p class="lead">{{ exhibition.description | safe }}</p>
       </div>
       <div class="col-md-6">
         <img class="pull-right logo" src="{{ exhibition.museum.logo.url }}">
@@ -39,9 +41,6 @@
           <li class="active"><a href="#info" role="tab" data-toggle="tab">Información</a></li>
           <li><a href="#actividades" role="tab" data-toggle="tab">Actividades</a></li>
           <li><a href="#creditos" role="tab" data-toggle="tab">Créditos</a></li>
-          {% if exhibition.hashtag %}
-            <li><a href="#redes" role="tab" data-toggle="tab">Redes Sociales</a></li>
-          {% endif %}
         </ul>
         <div class="tab-content">
           <div class="tab-pane fade in active" id="info">
@@ -53,22 +52,6 @@
           <div class="tab-pane fade" id="creditos">
             <p>{{ exhibition.credits | safe }}</p>
           </div>
-          {% if exhibition.hashtag %}
-            <div class="tab-pane fade" id="redes">
-              <a class="twitter-timeline"
-                 href="https://twitter.com/search?q={{exhibition.hashtag}}"
-                 data-widget-id="527576050100748288">Tweets sobre "{{exhibition.hashtag}}"</a>
-              <script>!function (d, s, id) {
-                var js, fjs = d.getElementsByTagName(s)[0], p = /^http:/.test(d.location) ? 'http' : 'https';
-                if (!d.getElementById(id)) {
-                  js = d.createElement(s);
-                  js.id = id;
-                  js.src = p + "://platform.twitter.com/widgets.js";
-                  fjs.parentNode.insertBefore(js, fjs);
-                }
-              }(document, "script", "twitter-wjs");</script>
-            </div>
-          {% endif %}
         </div>
       </div>
     </div>

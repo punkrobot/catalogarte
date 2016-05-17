@@ -13,6 +13,12 @@ $(function() {
         $("#filter_cat").val(category);
         search();
     }
+
+    var tag = $.urlParam('etiqueta');
+    if (tag && tag !== ""){
+        $("#filter_labels").val(tag);
+        search();
+    }
 });
 
 function search() {

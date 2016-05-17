@@ -11,7 +11,15 @@ $(function() {
     loadAudios();
 });
 
+function start(){
+    $(".cover").fadeOut();
+}
+
 function renderCatalog() {
+    docWidth = $('body').innerWidth();
+    docHeight = $('body').innerHeight() - 60;
+    isMobile = docWidth < 600;
+
     $(".slidee").html("");
 
     $.each(catalog.pages, function (i, page) {
@@ -46,9 +54,12 @@ function initFrames(){
         scrollBy: 1,
         touchDragging: true,
         mouseDragging: true,
+        releaseSwing: true,
+        swingSpeed: 0.1,
         scrollBar: ".scrollbar",
         dragHandle: true,
-        clickBar: true
+        clickBar: true,
+        keyboardNavBy: "pages"
     };
 
     var frame = new Sly(".frame", options);
@@ -143,19 +154,4 @@ function loadAudios(){
 
 function getPage(id){
     return $(catalog.pages).filter(function(i){ return catalog.pages[i].id === id; })[0];
-}
-
-function toggleFullScreen() {
-  var doc = window.document;
-  var docEl = doc.documentElement;
-
-  var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
-  var cancelFullScreen = doc.exitFullscreen || doc.mozCancelFullScreen || doc.webkitExitFullscreen || doc.msExitFullscreen;
-
-  if(!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
-    requestFullScreen.call(docEl);
-  }
-  else {
-    cancelFullScreen.call(doc);
-  }
 }

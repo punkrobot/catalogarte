@@ -9,7 +9,7 @@
       <div class="cover" style="background-color:{{ exhibition.category.color }};">
         <div class="details">
           <h4>{{ exhibition.title }}</h4>
-          <p>{{ exhibition.description | truncatewords:25 }}</p>
+          <p>{{ exhibition.description|safe|truncatewords_html:25 }}</p>
         </div>
       </div>
     </div>

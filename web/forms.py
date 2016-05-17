@@ -26,7 +26,8 @@ class ExhibitionForm(forms.ModelForm):
     class Meta:
         model = Exhibition
         fields = ['title', 'subtitle', 'start_date', 'end_date', 'description', 'credits',
-                  'information', 'activities', 'website', 'hashtag', 'cover', 'category', 'tags']
+                  'information', 'activities', 'website', 'hashtag', 'cover', "cover_alt",
+                  'category', 'tags']
 
     def __init__(self, *args, **kwargs):
         super(ExhibitionForm, self).__init__(*args, **kwargs)
