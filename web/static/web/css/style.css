@@ -118,7 +118,7 @@ a:hover {
 
 .navbar-static-top .navbar-brand {
     height: 100px;
-    padding: 10px;
+    padding: 20px 0;
 }
 
 @media (min-width: 768px){
@@ -205,7 +205,7 @@ a:hover {
 
 .word-cloud {
     background-color: #DA194D;
-    height: 350px;
+    height: 250px;
 }
 
 .cloud {
@@ -543,6 +543,10 @@ a:hover {
 .admin-action {
     margin-top: 5px;
     margin-bottom: 5px;
+}
+
+.admin-link {
+    margin: 12px 20px;
 }
 
 
