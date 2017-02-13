@@ -1,0 +1,68 @@
+{% extends "web/base.html" %}
+{% load staticfiles bootstrap3 %}
+
+{% block navbar %}
+  {% include 'web/_admin_navbar.html' %}
+{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block content %}
+  <div class="container-fluid well">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-8">
+          <h3>Documentos para el catálogo: {{ catalog.title }}</h3>
+          <h4 class="text-muted">Exhibición: {{ catalog.exhibition.title }}</h4>
+        </div>
+        <div class="col-md-4">
+          {% if review == False %}
+            <a href="{% url 'document.create' catalog.exhibition.slug catalog.slug %}" class="btn btn-primary pull-right admin-action">
+              <i class="fa fa-plus"></i> Agregar documento
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12 ">
+        <table class="table table-striped table-hover">
+          <thead>
+            <th>Nombre</th>
+            <th>Documento</th>
+            {% if review == False %}
+              <th>Acciones</th>
+            {% endif %}
+          </thead>
+          <tbody>
+            {% for document in document_list %}
+              <tr class="item top-level">
+                <td>{{document.name}}</td>
+                <td>
+                  <a href="{{ document.file.url }}" target="_blank">Descargar</a>
+                </td>
+                {% if review == False %}
+                  <td>
+                    <a class="btn btn-default btn-xs" href="{% url 'document.delete' catalog.exhibition.slug catalog.slug document.id %}" title="Eliminar documento">
+                      <i class="fa fa-remove"></i>
+                    </a>
+                  </td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}
+
+{% block javascript %}
+  <script src="{% static 'web/js/vendor/bootbox.min.js' %}"></script>
+  <script src="{% static 'web/js/vendor/jquery.json.min.js' %}"></script>
+{% endblock %}
+
+{% block footer %}{% endblock %}

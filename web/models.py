@@ -36,6 +36,15 @@ def get_catalog_file_path(instance, filename):
     return "/".join([instance.exhibition.museum.slug, instance.exhibition.slug, filename])
 
 
+def get_document_file_path(instance, filename):
+    return "/".join([
+        instance.catalog.exhibition.museum.slug,
+        instance.catalog.exhibition.slug,
+        instance.catalog.slug,
+        filename
+    ])
+
+
 @python_2_unicode_compatible
 class Museum(models.Model):
     user = models.OneToOneField(User, verbose_name="Usuario")
@@ -311,6 +320,22 @@ class Tag(models.Model):
 
     class Meta:
         verbose_name = "Etiqueta"
+
+    def __str__(self):
+        return self.name
+
+
+@python_2_unicode_compatible
+class Document(models.Model):
+    catalog = models.ForeignKey(Catalog, verbose_name="Catálogo")
+    name = models.CharField("Nombre", max_length=50)
+    slug = AutoSlugField(populate_from='name')
+    file = models.FileField(
+        "Archivo", max_length=255, upload_to=get_document_file_path, blank=False
+    )
+
+    class Meta:
+        verbose_name = "Documento"
 
     def __str__(self):
         return self.name

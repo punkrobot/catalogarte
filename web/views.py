@@ -7,13 +7,14 @@ from django.core.urlresolvers import reverse_lazy
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, get_list_or_404
-from django.views.generic import View, CreateView, DetailView, ListView, UpdateView, TemplateView
+from django.views.generic import View, CreateView, DetailView, ListView, UpdateView, \
+    TemplateView, DeleteView
 
 from ajaxuploader.views import AjaxFileUploader
 from ajaxuploader.backends.default_storage import DefaultStorageUploadBackend
 from braces.views import LoginRequiredMixin, AjaxResponseMixin, GroupRequiredMixin
-from .models import Museum, Exhibition, Catalog, Media, Tag, Category, Review
-from .forms import MuseumForm, ExhibitionForm, CatalogForm
+from .models import Museum, Exhibition, Catalog, Media, Tag, Category, Review, Document
+from .forms import MuseumForm, ExhibitionForm, CatalogForm, DocumentForm
 from .services import export_pdf
 
 
@@ -21,8 +22,8 @@ def _get_exhibition(user, slug):
     return get_object_or_404(Exhibition, museum__id=user.museum.id, slug=slug)
 
 
-def _get_catalog(user, ex_slug, slug):
-    return get_object_or_404(Catalog, exhibition__museum__id=user.museum.id,
+def _get_catalog(museum_id, ex_slug, slug):
+    return get_object_or_404(Catalog, exhibition__museum__id=museum_id,
                              exhibition__slug=ex_slug, slug=slug)
 
 
@@ -179,7 +180,9 @@ class CatalogPreview(LoginRequiredMixin, DetailView):
     template_name = "web/catalog_view.html"
 
     def get_object(self):
-        return _get_catalog(self.request.user, self.kwargs.get("ex_slug"), self.kwargs.get("slug"))
+        return _get_catalog(
+            self.request.user.museum.id, self.kwargs.get("ex_slug"), self.kwargs.get("slug")
+        )
 
     def get_context_data(self, **kwargs):
         context = super(CatalogPreview, self).get_context_data(**kwargs)
@@ -206,20 +209,20 @@ class CatalogEditor(LoginRequiredMixin, UpdateView):
 
 class CatalogView(LoginRequiredMixin, AjaxResponseMixin, View):
     def post_ajax(self, request, ex_slug, slug):
-        catalog = _get_catalog(self.request.user, ex_slug, slug)
+        catalog = _get_catalog(self.request.user.museum.id, ex_slug, slug)
         catalog.content = json.loads(request.body)
         catalog.save()
         return HttpResponse("ok")
 
     def delete_ajax(self, request, ex_slug, slug):
-        catalog = _get_catalog(self.request.user, ex_slug, slug)
+        catalog = _get_catalog(self.request.user.museum.id, ex_slug, slug)
         catalog.delete()
         return HttpResponse("ok")
 
 
 class CatalogExport(LoginRequiredMixin, AjaxResponseMixin, View):
     def get(self, request, ex_slug, slug):
-        catalog = _get_catalog(self.request.user, ex_slug, slug)
+        catalog = _get_catalog(self.request.user.museum.id, ex_slug, slug)
         export_pdf(catalog)
 
         response_data = {
@@ -231,7 +234,7 @@ class CatalogExport(LoginRequiredMixin, AjaxResponseMixin, View):
 
 class CatalogPublish(LoginRequiredMixin, AjaxResponseMixin, View):
     def post_ajax(self, request, ex_slug, slug):
-        catalog = _get_catalog(self.request.user, ex_slug, slug)
+        catalog = _get_catalog(self.request.user.museum.id, ex_slug, slug)
         data = json.loads(request.body)
 
         if data["issuu"]:
@@ -298,6 +301,84 @@ class CatalogPrint(DetailView):
         return get_object_or_404(Catalog, exhibition__museum__slug=self.kwargs.get("m_slug"),
                                  exhibition__slug=self.kwargs.get("ex_slug"),
                                  slug=self.kwargs.get("slug"))
+
+
+class DocumentList(LoginRequiredMixin, ListView):
+    template_name = "web/document_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(DocumentList, self).get_context_data(**kwargs)
+        context["catalog"] = _get_catalog(
+            self.request.user.museum.id, self.kwargs.get("ex_slug"), self.kwargs.get("slug")
+        )
+        context["review"] = False
+        return context
+
+    def get_queryset(self):
+        return Document.objects.filter(
+            catalog__exhibition__museum__id=self.request.user.museum.id,
+            catalog__exhibition__slug=self.kwargs.get("ex_slug"),
+            catalog__slug=self.kwargs.get("slug")
+        )
+
+
+class DocumentCreate(LoginRequiredMixin, CreateView):
+    form_class = DocumentForm
+    template_name = "web/document_form.html"
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy("document.list", args=(self.kwargs["ex_slug"], self.kwargs["slug"]))
+
+    def get_context_data(self, **kwargs):
+        context = super(DocumentCreate, self).get_context_data(**kwargs)
+        context["catalog"] = _get_catalog(
+            self.request.user.museum.id, self.kwargs.get("ex_slug"), self.kwargs.get("slug")
+        )
+        return context
+
+    def form_valid(self, form):
+        form.instance.catalog = _get_catalog(
+            self.request.user.museum.id, self.kwargs["ex_slug"], self.kwargs["slug"]
+        )
+        return super(DocumentCreate, self).form_valid(form)
+
+
+class DocumentDelete(LoginRequiredMixin, DeleteView):
+    model = Document
+    template_name = "web/document_delete.html"
+
+    def get_object(self):
+        return get_object_or_404(Document, id=self.kwargs.get("id"))
+
+    def get_context_data(self, **kwargs):
+        context = super(DocumentDelete, self).get_context_data(**kwargs)
+        context["catalog"] = _get_catalog(
+            self.request.user.museum.id, self.kwargs.get("ex_slug"), self.kwargs.get("slug")
+        )
+        return context
+
+    def get_success_url(self, **kwargs):
+        return reverse_lazy("document.list", args=(self.kwargs["ex_slug"], self.kwargs["slug"]))
+
+
+class DocumentReviewList(LoginRequiredMixin, ListView):
+    template_name = "web/document_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super(DocumentReviewList, self).get_context_data(**kwargs)
+        museum = Museum.objects.get(slug=self.kwargs.get("m_slug"))
+        context["catalog"] = _get_catalog(
+            museum.id, self.kwargs.get("ex_slug"), self.kwargs.get("slug")
+        )
+        context["review"] = True
+        return context
+
+    def get_queryset(self):
+        return Document.objects.filter(
+            catalog__exhibition__museum__slug=self.kwargs.get("m_slug"),
+            catalog__exhibition__slug=self.kwargs.get("ex_slug"),
+            catalog__slug=self.kwargs.get("slug")
+        )
 
 
 class MediaUpload(LoginRequiredMixin, AjaxResponseMixin, View):

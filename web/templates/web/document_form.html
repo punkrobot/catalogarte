@@ -1,0 +1,44 @@
+{% extends "web/base.html" %}
+{% load bootstrap3 %}
+
+{% block navbar %}
+  {% include 'web/_admin_navbar.html' %}
+{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block content %}
+  <div class="container-fluid well">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h2 class="admin-title">
+            Agregar documento
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1 well">
+        <form action="" enctype="multipart/form-data" method="post" class="form-horizontal">
+          {% csrf_token %}
+          {% bootstrap_form form layout="horizontal" label_class='col-md-2' field_class='col-md-8' %}
+          {% buttons%}
+          <div class="col-md-8 col-md-offset-2">
+            <a href="{% url 'document.list' catalog.exhibition.slug catalog.slug %}" class="btn btn-default pull-left">Cancelar</a>
+            <button type="submit" class="btn btn-primary pull-right">Guardar</button>
+          </div>
+          {% endbuttons %}
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block head %}
+  {{ form.media }}
+{% endblock %}
+
+{% block footer %}{% endblock %}

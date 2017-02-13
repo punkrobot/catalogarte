@@ -49,6 +49,20 @@ urlpatterns = [
     url(r'^(?P<m_slug>[\w-]+)/(?P<ex_slug>[\w-]+)/(?P<slug>[\w-]+)/review$',
         views.CatalogReview.as_view(), name='catalog.review'),
 
+    # Document url's
+
+    url(r'^admin/(?P<ex_slug>[\w-]+)/(?P<slug>[\w-]+)/documentos/agregar',
+        views.DocumentCreate.as_view(), name='document.create'),
+
+    url(r'^admin/(?P<ex_slug>[\w-]+)/(?P<slug>[\w-]+)/documentos/borrar/(?P<id>[0-9]+)',
+        views.DocumentDelete.as_view(), name='document.delete'),
+
+    url(r'^admin/(?P<ex_slug>[\w-]+)/(?P<slug>[\w-]+)/documentos',
+        views.DocumentList.as_view(), name='document.list'),
+
+    url(r'^(?P<m_slug>[\w-]+)/(?P<ex_slug>[\w-]+)/(?P<slug>[\w-]+)/documentos',
+        views.DocumentReviewList.as_view(), name='document_review.list'),
+
     # Media url's
 
     url(r'^admin/(?P<slug>[\w-]+)/media$',

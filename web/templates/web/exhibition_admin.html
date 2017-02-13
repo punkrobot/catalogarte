@@ -16,9 +16,6 @@
           <a href="{% url 'exhibition.create' %}" class="btn btn-primary pull-right admin-action">
             <i class="fa fa-plus"></i> Nueva exhibición
           </a>
-          <a target="_blank" href="{% static 'web/derechos.pdf' %}" class="pull-right admin-link text-muted">
-            <i class="fa fa-download"></i> Documento para autorización de derechos
-          </a>
         </div>
       </div>
     </div>
@@ -73,6 +70,9 @@
                     {% endif %}
                   </td>
                   <td>
+                    <a class="btn btn-default btn-xs" href="{% url 'document.list' exhibition.slug catalog.slug %}" title="Documentos legales">
+                      <i class="fa fa-file-text"></i>
+                    </a>
                     {% if catalog.status == 'created' or catalog.status == 'rejected' %}
                       <a class="btn btn-default btn-xs" href="{% url 'catalog.editor' exhibition.slug catalog.slug %}" title="Editar catálogo">
                         <i class="fa fa-pencil"></i>

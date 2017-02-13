@@ -1,0 +1,36 @@
+{% extends "web/base.html" %}
+{% load bootstrap3 %}
+
+{% block navbar %}
+  {% include 'web/_admin_navbar.html' %}
+{% endblock %}
+
+{% block menu %}{% endblock %}
+
+{% block content %}
+  <div class="container-fluid well">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <h2 class="admin-title">
+            Eliminar documento
+          </h2>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-10 col-md-offset-1 well">
+        <form action="" method="post" class="form-horizontal">
+          {% csrf_token %}
+          <p class="lead">¿Estás seguro de borrar el documento "{{ object.name }}"?</p>
+          <a href="{% url 'document.list' catalog.exhibition.slug catalog.slug %}" class="btn btn-default pull-left">Cancelar</a>
+          <button type="submit" class="btn btn-primary pull-right">Confirmar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block footer %}{% endblock %}

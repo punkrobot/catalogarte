@@ -25,6 +25,7 @@
               <li><a href="#" onclick="showMobile();">Dispositivos móviles</a></li>
             </ul>
           </li>
+          <li><a href="{% url 'document_review.list' review.catalog.exhibition.museum.slug review.catalog.exhibition.slug review.catalog.slug %}" target="_blank"><i class="fa fa-fw fa-file-text"></i> Documentos</a></li>
         </ul>
       </div>
     {% else %}

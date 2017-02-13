@@ -5,7 +5,7 @@ from django import forms
 from ckeditor.widgets import CKEditorWidget
 from datetimewidget.widgets import DateTimeWidget
 
-from .models import Exhibition, Catalog, Museum
+from .models import Exhibition, Catalog, Museum, Document
 
 
 class MuseumForm(forms.ModelForm):
@@ -54,3 +54,9 @@ class CatalogForm(forms.ModelForm):
     class Meta:
         model = Catalog
         fields = ['title', 'width', 'height']
+
+
+class DocumentForm(forms.ModelForm):
+    class Meta:
+        model = Document
+        fields = ['name', 'file']
