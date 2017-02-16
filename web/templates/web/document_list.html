@@ -20,6 +20,9 @@
             <a href="{% url 'document.create' catalog.exhibition.slug catalog.slug %}" class="btn btn-primary pull-right admin-action">
               <i class="fa fa-plus"></i> Agregar documento
             </a>
+            <a target="_blank" href="{% static 'web/derechos.pdf' %}" class="pull-right admin-link text-muted">
+              <i class="fa fa-download"></i> Documento para autorización de derechos
+            </a>
           {% endif %}
         </div>
       </div>
