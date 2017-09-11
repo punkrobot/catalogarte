@@ -58,27 +58,20 @@
     <hr><br>
     {% for catalog in catalog_list %}
       <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-4">
           {% if forloop.first %}
-            <h3>Catálogos disponibles:</h3>
+            <h3>Publicaciones disponibles:</h3>
           {% endif %}
         </div>
         <div class="col-md-5">
-            <a href="{% url 'catalog.detail' exhibition.museum.slug exhibition.slug catalog.slug %}" class="btn btn-block btn-colored" style="background-color:{{ exhibition.category.color }};">
+            <a href="{% url 'catalog.detail' exhibition.museum.slug exhibition.slug catalog.slug %}" class="btn btn-tall btn-block btn-colored" style="background-color:{{ exhibition.category.color }};">
               {{ catalog.title }}
             </a>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
           {% if catalog.pdf_available %}
             <a class="btn btn-block btn-default" href="/{{ catalog.get_pdf_filename }}" target="_blank">
               <i class="fa fa-file-pdf-o"></i> Descargar PDF
-            </a>
-          {% endif %}
-        </div>
-        <div class="col-md-2">
-          {% if catalog.issuu_url %}
-            <a class="btn btn-block btn-default" href="{{catalog.issuu_url}}" target="_blank">
-              <i class="fa fa-newspaper-o"></i> Ver en ISSUU
             </a>
           {% endif %}
         </div>

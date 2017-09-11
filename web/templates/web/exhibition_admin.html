@@ -163,12 +163,7 @@
         title: "Publicar catálogo",
         message: "<p>El catálogo se enviará a revisión antes de ser publicado.</p>"+
                  "<div class='form-group'><div class='col-md-offset-1 col-md-10'>"+
-                 "<label><input id='pdf-checkbox' type='checkbox'> Generar PDF</label></div></div>"+
-                 "<div class='form-group'><div class='col-md-offset-1 col-md-10'>"+
-                 "<label><input id='issuu-checkbox' type='checkbox'> Publicar en ISSUU</label>"+
-                 "<p class='text-muted'>"+
-                 "Para publicar automáticamente el catálogo en ISSUU se deben configurar las credenciasles en la sección del perfil del museo."+
-                 "</p><br></div></div>",
+                 "<label><input id='pdf-checkbox' type='checkbox'> Generar PDF</label></div></div>",
         buttons: {
             success: {
               label: "Publicar",
@@ -180,7 +175,7 @@
                 alerta.appendTo($('body')).fadeIn(1000);
 
                 var data = {
-                  issuu: $("#issuu-checkbox:checked").length > 0,
+                  issuu: false,
                   pdf: $("#pdf-checkbox:checked").length > 0
                 };
                 $.ajax({

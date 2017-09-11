@@ -68,7 +68,7 @@
           <div id="menu-collapse" class="collapse navbar-collapse">
             <ul class="nav navbar-nav center-block">
               <li {% if active_item == 'home' %}class="active"{% endif %}><a href="{% url 'index' %}">Inicio <span class="sr-only">(activo)</span></a></li>
-              <li {% if active_item == 'catalogos' %}class="active"{% endif %}><a href="{% url 'exhibition.list' %}">Catálogos</a></li>
+              <li {% if active_item == 'catalogos' %}class="active"{% endif %}><a href="{% url 'exhibition.list' %}">Publicaciones</a></li>
               <li {% if active_item == 'museos' %}class="active"{% endif %}><a href="{% url 'index' %}#museos">Museos</a></li>
             </ul>
           </div>
@@ -81,7 +81,7 @@
     {% block footer %}
       <div class="container">
         <div class="row footer">
-          <img class="img-responsive center-block" src="{% static 'web/images/logo-inba-catalogarte.png' %}">
+          <img class="img-responsive center-block img" src="{% static 'web/images/logo-inba-catalogarte.png' %}">
           <p>
             Algunos Derechos Reservados ©. Instituto Nacional de Bellas Artes y Literatura 2016.<br>
             Avenida Paseo de la Reforma y Campo Marte S/N, Col. Polanco Chapultepec, Del. Miguel Hidalgo, C.P. 11560, Ciudad de México.<br>

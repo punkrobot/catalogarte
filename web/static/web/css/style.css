@@ -324,6 +324,8 @@ a:hover {
     left: 5px;
     bottom: 10px;
     right: 5px;
+    width: auto;
+    height: auto;
     display: none;
 }
 
@@ -386,6 +388,11 @@ a:hover {
     color: #FFF;
 }
 
+.btn-tall {
+    height: 50px;
+    line-height: 35px;
+}
+
 .separator {
     height: 20px;
     background-color: #83B93A;
@@ -440,6 +447,10 @@ a:hover {
 
 .footer p {
     margin-top: 20px;
+}
+
+.footer .img {
+    height: 55px;
 }
 
 .catalog-nav .nav-logo {
